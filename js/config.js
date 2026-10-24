@@ -5,7 +5,7 @@
 window.GF_CONFIG = {
   title: 'Glufonde Fracture',
   subtitle: 'Rulebook',
-  tagline: 'Книга правил настольной ролевой игры',
+  tagline: 'Всё о Glufonde Fracture',
 
   // Взято со стр. 2 книги
   author: 'Александр Капкин',      // «Автор игры» и «Автор текста»
