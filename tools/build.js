@@ -34,8 +34,21 @@ const chapters = manifest.chapters.map((c) => {
 }).filter(Boolean);
 
 const data = { built: new Date().toISOString(), chapters };
+if (problems) {
+  console.error('\nСборка отменена: обнаружено замечаний: ' + problems + '. Существующий js/book-data.js не изменён.');
+  process.exit(1);
+}
+
 const out = '/* Файл создаётся автоматически командой «node tools/build.js». Не редактируйте вручную. */\n' +
   'window.GF_BOOK = ' + JSON.stringify(data) + ';\n';
-fs.writeFileSync(path.join(root, 'js', 'book-data.js'), out, 'utf8');
-console.log('\nГотово: js/book-data.js (' + Math.round(out.length / 1024) + ' КБ), глав: ' + chapters.length + (problems ? ', замечаний: ' + problems : ''));
+const target = path.join(root, 'js', 'book-data.js');
+const temp = target + '.tmp';
+try {
+  fs.writeFileSync(temp, out, 'utf8');
+  fs.renameSync(temp, target);
+} catch (err) {
+  try { if (fs.existsSync(temp)) fs.unlinkSync(temp); } catch (_) {}
+  throw err;
+}
+console.log('\nГотово: js/book-data.js (' + Math.round(out.length / 1024) + ' КБ), глав: ' + chapters.length);
 process.exit(problems ? 1 : 0);
