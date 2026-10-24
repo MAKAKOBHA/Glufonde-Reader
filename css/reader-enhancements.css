@@ -205,3 +205,18 @@ html.gf-intro-revealing #home:not([hidden]) {
 }
 /* Внутри статьи этот дубль навигации не нужен: она есть в постоянном меню. */
 .content__footer { display: none; }
+
+/* Десктоп: использовать больше ширины области статьи, не затрагивая планшеты. */
+@media (min-width: 1100px) {
+  .content .prose,
+  .content .pager,
+  .content .hl-bar {
+    max-width: min(100%, 980px);
+  }
+}
+/* Главные заголовки глав используют фирменный шрифт, независимо от настроек чтения. */
+.prose h1 {
+  font-family: 'GF Brighton', Georgia, serif;
+  font-weight: 400;
+  text-transform: uppercase;
+}
