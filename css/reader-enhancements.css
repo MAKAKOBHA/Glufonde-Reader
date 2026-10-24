@@ -53,81 +53,113 @@ html.gf-intro-revealing #home:not([hidden]) {
   to { opacity: 1; }
 }
 
-/* Крупная композиция главного экрана на широких мониторах. */
-@media (min-width: 1200px) {
+/* Адаптивное главное меню: обложка и текст всегда в своих ячейках.
+   Никакого transform/scale на обложке: он раньше выходил за пределы колонки. */
+.home {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+}
+.home__cover, .home__body {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+.home__cover {
+  min-height: 0;
+  padding: clamp(20px, 4vw, 48px) 24px 0;
+}
+.home__cover img {
+  display: block;
+  width: min(100%, 380px);
+  max-width: 100%;
+  max-height: 64dvh;
+  height: auto;
+  aspect-ratio: 1867 / 2461;
+  object-fit: contain;
+  transform: none;
+}
+.home__body {
+  position: relative;
+  width: min(100%, 680px);
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+.home__body > .orn {
+  position: absolute;
+  top: 29px;
+  left: 24px;
+  width: 88px;
+  height: 94px;
+  -webkit-mask-position: left top;
+  mask-position: left top;
+  -webkit-mask-size: 80px 84px;
+  mask-size: 80px 84px;
+  pointer-events: none;
+}
+.home__title {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-height: 92px;
+  padding-left: clamp(46px, 9vw, 66px);
+  transform: none;
+  font-size: clamp(2rem, 8.4vw, 3.5rem);
+  line-height: 1.03;
+  letter-spacing: 0;
+  white-space: normal;
+  overflow-wrap: normal;
+}
+.home__actions { min-width: 0; }
+@media (max-width: 480px) {
+  .home__body { padding: 26px 20px 40px; }
+  .home__body > .orn { top: 23px; left: 20px; }
+  .home__title { padding-left: 47px; font-size: clamp(1.9rem, 8vw, 2.8rem); }
+}
+@media (min-width: 700px) and (max-width: 1099px) {
+  .home__cover { padding-top: 35px; }
+  .home__cover img { width: min(54vw, 440px); max-height: 53dvh; }
+  .home__body { padding: 30px 44px 60px; }
+  .home__body > .orn { left: 44px; top: 27px; }
+  .home__title { font-size: clamp(3rem, 6.5vw, 4.3rem); }
+}
+@media (min-width: 1100px) {
   .home {
-    grid-template-columns: minmax(0, 42%) minmax(0, 58%);
-    align-items: center;
-  }
-  .home__cover {
-    padding: 22px 24px;
+    grid-template-columns: minmax(0, 41fr) minmax(0, 59fr);
+    column-gap: clamp(24px, 3vw, 58px);
+    padding: 26px clamp(24px, 4vw, 80px);
     min-height: 100dvh;
   }
+  .home__cover { padding: 0; min-height: 0; }
   .home__cover img {
-    width: min(88%, 590px, 68.5dvw);
-    max-height: 91dvh;
+    width: min(100%, 560px);
+    max-height: 86dvh;
     height: auto;
-    object-fit: contain;
   }
   .home__body {
     max-width: none;
-    padding: 50px clamp(20px, 3.4vw, 70px) 50px 0;
+    width: 100%;
+    margin: 0;
+    padding: 50px 0 50px 0;
   }
   .home__body > .orn {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 174px;
-    height: 154px;
-    -webkit-mask-position: left top;
-    mask-position: left top;
-    -webkit-mask-size: 132px 118px;
-    mask-size: 132px 118px;
-    pointer-events: none;
+    top: 26px; left: 0;
+    width: 128px; height: 116px;
+    -webkit-mask-size: 116px 106px;
+    mask-size: 116px 106px;
   }
-  .home__body > .orn::before { content: none; }
   .home__title {
-    padding-left: clamp(50px, 4.3vw, 74px);
-    font-size: clamp(5rem, 7.4vw, 8rem);
+    min-height: 126px;
+    padding-left: clamp(54px, 5vw, 80px);
+    font-size: clamp(3.3rem, 5.3vw, 7rem);
     line-height: .98;
-    letter-spacing: .02em;
+    white-space: normal;
     overflow-wrap: normal;
   }
   .home__tagline, .home__meta, .home__actions, .home__legal {
-    margin-left: clamp(50px, 4.3vw, 74px);
-  }
-}
-
-/* Телефон: вензель обрамляет начало названия, а не занимает отдельную строку. */
-@media (max-width: 899px) {
-  .home__body > .orn {
-    position: absolute;
-    top: 23px;
-    left: 22px;
-    width: 92px;
-    height: 94px;
-    -webkit-mask-position: left top;
-    mask-position: left top;
-    -webkit-mask-size: 82px 84px;
-    mask-size: 82px 84px;
-    pointer-events: none;
-  }
-  .home__title {
-    padding-left: clamp(43px, 11vw, 61px);
-    min-height: 76px;
-    display: flex;
-    align-items: center;
-    transform: translateY(16px);
-    font-size: clamp(2.6rem, 12.7vw, 3.4rem);
-    line-height: 1;
-    letter-spacing: 0;
-    white-space: nowrap;
-  }
-}
-/* Большой десктоп: расширенная обложка по разметке, без изменения её пропорций. */
-@media (min-width: 1400px) {
-  .home__cover img {
-    transform: translateX(clamp(42px, 4.4vw, 76px)) scale(1.29);
-    transform-origin: center center;
+    margin-left: clamp(54px, 5vw, 80px);
   }
 }
