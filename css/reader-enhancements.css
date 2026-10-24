@@ -36,3 +36,6 @@
   100% { opacity: 0; }
 }
 #gf-intro-splash.is-done { display: none; }
+
+/* Фирменный заголовок всегда использует Brighton, независимо от старых сохранённых настроек. */
+.home__title { font-family: 'GF Brighton', Georgia, serif; font-weight: 400; text-transform: uppercase; }
