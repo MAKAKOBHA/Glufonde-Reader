@@ -10,6 +10,8 @@
  */
 'use strict';
 const fs = require('fs');
+const crypto = require('crypto');
+const checkOnly = process.argv.includes('--check');
 const path = require('path');
 const md = require('../js/markdown.js');
 
@@ -33,7 +35,8 @@ const chapters = manifest.chapters.map((c) => {
   return { id: c.id, file: c.file, md: text };
 }).filter(Boolean);
 
-const data = { built: new Date().toISOString(), chapters };
+const fingerprint = crypto.createHash('sha256').update(JSON.stringify(chapters)).digest('hex');
+const data = { built: fingerprint, chapters };
 if (problems) {
   console.error('\nСборка отменена: обнаружено замечаний: ' + problems + '. Существующий js/book-data.js не изменён.');
   process.exit(1);
@@ -42,6 +45,14 @@ if (problems) {
 const out = '/* Файл создаётся автоматически командой «node tools/build.js». Не редактируйте вручную. */\n' +
   'window.GF_BOOK = ' + JSON.stringify(data) + ';\n';
 const target = path.join(root, 'js', 'book-data.js');
+if (checkOnly) {
+  if (!fs.existsSync(target) || fs.readFileSync(target, 'utf8') !== out) {
+    console.error('✗ js/book-data.js не соответствует Markdown. Запустите node tools/build.js и сохраните обновлённый файл.');
+    process.exit(1);
+  }
+  console.log('✓ js/book-data.js синхронизирован с Markdown.');
+  process.exit(0);
+}
 const temp = target + '.tmp';
 try {
   fs.writeFileSync(temp, out, 'utf8');
