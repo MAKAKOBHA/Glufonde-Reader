@@ -97,3 +97,32 @@ html.gf-intro-revealing #home:not([hidden]) {
     margin-left: clamp(50px, 4.3vw, 74px);
   }
 }
+
+/* Телефон: вензель обрамляет начало названия, а не занимает отдельную строку. */
+@media (max-width: 899px) {
+  .home__body > .orn {
+    position: absolute;
+    top: 23px;
+    left: 22px;
+    width: 92px;
+    height: 94px;
+    -webkit-mask-position: left top;
+    mask-position: left top;
+    -webkit-mask-size: 82px 84px;
+    mask-size: 82px 84px;
+    pointer-events: none;
+  }
+  .home__title {
+    padding-left: clamp(43px, 11vw, 61px);
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+  }
+}
+/* Большой десктоп: расширенная обложка по разметке, без изменения её пропорций. */
+@media (min-width: 1400px) {
+  .home__cover img {
+    transform: translateX(clamp(42px, 4.4vw, 76px)) scale(1.29);
+    transform-origin: center center;
+  }
+}
