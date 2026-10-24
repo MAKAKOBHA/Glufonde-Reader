@@ -42,3 +42,13 @@
 
 /* Фирменный заголовок всегда использует Brighton, независимо от старых сохранённых настроек. */
 .home__title { font-family: 'GF Brighton', Georgia, serif; font-weight: 400; text-transform: uppercase; }
+
+/* Меню проявляется поверх чёрного фона после окончания заставки. */
+html.gf-intro-pending #home:not([hidden]) { opacity: 0; }
+html.gf-intro-revealing #home:not([hidden]) {
+  animation: gf-home-reveal 900ms ease-out both;
+}
+@keyframes gf-home-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
