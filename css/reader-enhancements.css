@@ -16,7 +16,13 @@
   background: #000;
   overflow: hidden;
   pointer-events: auto;
-  animation: gf-splash-overlay 3s linear both;
+  width: 100%;
+  width: 100vw;
+  height: 100%;
+  height: 100dvh;
+  isolation: isolate;
+  opacity: 1;
+  /* Непрозрачный фон остаётся до удаления заставки скриптом. */
 }
 #gf-intro-splash img {
   display: block;
@@ -29,11 +35,8 @@
 @keyframes gf-splash-image {
   0% { opacity: 0; transform: scale(.78); }
   55% { opacity: 1; }
-  100% { opacity: 1; transform: scale(1.12); }
-}
-@keyframes gf-splash-overlay {
-  0%, 84% { opacity: 1; }
-  100% { opacity: 0; }
+  82% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.12); }
 }
 #gf-intro-splash.is-done { display: none; }
 
