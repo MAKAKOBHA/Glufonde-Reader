@@ -52,3 +52,48 @@ html.gf-intro-revealing #home:not([hidden]) {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* Крупная композиция главного экрана на широких мониторах. */
+@media (min-width: 1200px) {
+  .home {
+    grid-template-columns: minmax(0, 42%) minmax(0, 58%);
+    align-items: center;
+  }
+  .home__cover {
+    padding: 22px 24px;
+    min-height: 100dvh;
+  }
+  .home__cover img {
+    width: min(88%, 590px, 68.5dvw);
+    max-height: 91dvh;
+    height: auto;
+    object-fit: contain;
+  }
+  .home__body {
+    max-width: none;
+    padding: 50px clamp(20px, 3.4vw, 70px) 50px 0;
+  }
+  .home__body > .orn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 124px;
+    height: 116px;
+    -webkit-mask-position: left top;
+    mask-position: left top;
+    -webkit-mask-size: 72px 78px;
+    mask-size: 72px 78px;
+    pointer-events: none;
+  }
+  .home__body > .orn::before { content: none; }
+  .home__title {
+    padding-left: clamp(50px, 4.3vw, 74px);
+    font-size: clamp(5rem, 7.4vw, 8rem);
+    line-height: .98;
+    letter-spacing: .02em;
+    overflow-wrap: normal;
+  }
+  .home__tagline, .home__meta, .home__actions, .home__legal {
+    margin-left: clamp(50px, 4.3vw, 74px);
+  }
+}
