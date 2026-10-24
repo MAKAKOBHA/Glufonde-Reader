@@ -219,4 +219,7 @@ html.gf-intro-revealing #home:not([hidden]) {
   font-family: 'GF Brighton', Georgia, serif;
   font-weight: 400;
   text-transform: uppercase;
+  /* Дополнительный межсловный промежуток примерно как три обычных пробела. */
+  word-spacing: .65em;
+  font-size: clamp(1.8rem, 3.4vw, 2.75rem);
 }
