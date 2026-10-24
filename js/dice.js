@@ -15,13 +15,13 @@
               {x:195,y:145,vx:0,vy:0,angle:.24,spin:0,value:7}];
   var moving = false, last = 0, downAt = 0, frame = 0;
   function available() {
-    if (innerWidth < 1440 || !matchMedia('(pointer: fine)').matches || !location.hash.startsWith('#/read/')) return false;
+    if (innerWidth < 1100 || !matchMedia('(pointer: fine)').matches || !location.hash.startsWith('#/read/')) return false;
     var article = document.getElementById('article');
     if (!article || !article.getBoundingClientRect().width) return false;
     var rect = article.getBoundingClientRect();
     var room = innerWidth - rect.right;
-    if (room < 310) return false;
-    canvas.style.left = Math.round(rect.right + Math.min(28,(room-290)/2)) + 'px';
+    if (room < 285) return false;
+    canvas.style.left = Math.round(rect.right + Math.max(2, Math.min(14, (room-285)/2))) + 'px';
     canvas.style.top = 'max(125px, 20vh)';
     return true;
   }
