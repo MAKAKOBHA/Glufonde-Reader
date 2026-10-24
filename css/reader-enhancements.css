@@ -117,6 +117,10 @@ html.gf-intro-revealing #home:not([hidden]) {
     min-height: 76px;
     display: flex;
     align-items: center;
+    font-size: clamp(2.6rem, 12.7vw, 3.4rem);
+    line-height: 1;
+    letter-spacing: 0;
+    white-space: nowrap;
   }
 }
 /* Большой десктоп: расширенная обложка по разметке, без изменения её пропорций. */
