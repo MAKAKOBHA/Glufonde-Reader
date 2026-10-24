@@ -1,4 +1,4 @@
-/* Glufonde Fracture: оформление заголовков и 4-секундная заставка RollSet */
+/* Glufonde Fracture: оформление заголовков и 3-секундная заставка RollSet */
 .home__title, .topbar__brand-main, .toc__name, .pager__title,
 .settings__head h2, .prose h1, .prose h2, .prose h3,
 .prose h4, .prose h5, .prose h6, .legal h1,
@@ -16,7 +16,7 @@
   background: #000;
   overflow: hidden;
   pointer-events: auto;
-  animation: gf-splash-overlay 4s linear both;
+  animation: gf-splash-overlay 3s linear both;
 }
 #gf-intro-splash img {
   display: block;
@@ -24,7 +24,7 @@
   max-height: 78vh;
   object-fit: contain;
   opacity: 0;
-  animation: gf-splash-image 4s cubic-bezier(.25,.6,.3,1) both;
+  animation: gf-splash-image 3s cubic-bezier(.25,.6,.3,1) both;
 }
 @keyframes gf-splash-image {
   0% { opacity: 0; transform: scale(.78); }
