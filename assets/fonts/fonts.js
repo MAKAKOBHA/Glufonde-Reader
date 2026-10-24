@@ -8,6 +8,7 @@
  * Не забудьте добавить @font-face для нового шрифта в fonts.css.
  */
 window.GF_FONTS = [
+  { id: 'brighton', name: 'Brighton Two Gothika (заголовки)', stack: "'GF Brighton', Georgia, serif" },
   { id: 'default',     name: 'Как в PDF (Times New Roman)', stack: "'Times New Roman', Tinos, 'Liberation Serif', 'Nimbus Roman', Times, 'DejaVu Serif', serif" },
   { id: 'liberation',  name: 'Liberation Serif (с засечками)', stack: "'GF Liberation Serif', 'Times New Roman', serif" },
   { id: 'lora',        name: 'Lora (книжный)', stack: "'GF Lora', Georgia, 'Times New Roman', serif" },

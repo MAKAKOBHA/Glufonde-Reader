@@ -27,3 +27,5 @@
 
 @font-face { font-family: 'GF Lora'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('Lora-Variable.woff') format('woff'); }
 @font-face { font-family: 'GF Lora'; font-style: italic; font-weight: 400 700; font-display: swap; src: url('Lora-Italic-Variable.woff') format('woff'); }
+
+@font-face { font-family: 'GF Brighton'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('BrightonTwoGothika.ttf') format('truetype'); }

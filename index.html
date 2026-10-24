@@ -10,12 +10,17 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/fonts/fonts.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/reader-enhancements.css">
   <script src="js/storage.js"></script>
   <script src="assets/fonts/fonts.js"></script>
   <script src="js/fonts.js"></script>
   <script src="js/theme-init.js"></script>
 </head>
 <body data-view="home">
+  <!-- Заставка в стиле RollSet, без кнопки пропуска -->
+  <div id="gf-intro-splash" aria-hidden="true">
+    <img src="https://makakobha.github.io/RollSet/Assets/Intro/intro.webp" alt="" fetchpriority="high">
+  </div>
   <a class="skip-link" href="#main">Перейти к тексту</a>
   <div id="sr-status" class="sr-only" role="status" aria-live="polite"></div>
 
@@ -38,6 +43,9 @@
       <div class="home__actions">
         <a class="btn btn--primary" id="btn-read" href="#/read/o-knige">RuleBook</a>
         <a class="btn btn--primary" id="btn-lore" href="#/" hidden>История Глюфонде</a>
+        <a class="btn btn--primary" id="btn-create-character"
+           href="https://makakobha.github.io/RollSet/"
+           target="_blank" rel="noopener noreferrer">Создать персонажа</a>
         <a class="btn" id="btn-continue" href="#/" hidden>
           <span class="btn__label">Продолжить чтение</span>
           <span class="btn__sub" id="continue-title"></span>
@@ -222,5 +230,6 @@
   <script src="js/search.js"></script>
   <script src="js/ambience.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/reader-splash.js"></script>
 </body>
 </html>

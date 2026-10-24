@@ -6,7 +6,7 @@
 (function (root) {
   'use strict';
   var DEFAULTS = { theme: 'dark', fontScale: 100, measure: 720, lineHeight: 1.7, sidebar: true,
-    fontBody: 'default', fontHeading: 'default', ambOn: true, ambVolume: 40 };
+    fontBody: 'default', fontHeading: 'brighton', ambOn: true, ambVolume: 40 };
   var LIMITS = { fontScale: [80, 160], measure: [520, 960], ambVolume: [0, 100] };
 
   function clamp(v, lim, def) {

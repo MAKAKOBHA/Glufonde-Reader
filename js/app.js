@@ -544,7 +544,7 @@
   $('set-measure').addEventListener('input', function (e) { change({ measure: Number(e.target.value) }); });
   $('font-minus').addEventListener('click', function () { change({ fontScale: settings.fontScale - 10 }); });
   $('font-plus').addEventListener('click', function () { change({ fontScale: settings.fontScale + 10 }); });
-  els['settings-reset'].addEventListener('click', function () { change({ theme: 'dark', fontScale: 100, measure: 720, lineHeight: 1.7, fontBody: 'default', fontHeading: 'default' }); });
+  els['settings-reset'].addEventListener('click', function () { change({ theme: 'dark', fontScale: 100, measure: 720, lineHeight: 1.7, fontBody: 'default', fontHeading: 'brighton' }); });
   els['btn-settings'].addEventListener('click', openSettings);
   els['home-settings'].addEventListener('click', openSettings);
   els.settings.addEventListener('click', function (e) { if (e.target === els.settings) els.settings.close(); });

@@ -1,0 +1,38 @@
+/* Glufonde Fracture: оформление заголовков и 4-секундная заставка RollSet */
+.home__title, .topbar__brand-main, .toc__name, .pager__title,
+.settings__head h2, .prose h1, .prose h2, .prose h3,
+.prose h4, .prose h5, .prose h6, .legal h1,
+.home__eyebrow, .pager__dir {
+  text-transform: uppercase;
+}
+
+/* Заголовочный шрифт назначается через --font-head; основной текст не меняется. */
+#gf-intro-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  background: #000;
+  overflow: hidden;
+  pointer-events: auto;
+  animation: gf-splash-overlay 4s linear both;
+}
+#gf-intro-splash img {
+  display: block;
+  max-width: min(86vw, 900px);
+  max-height: 78vh;
+  object-fit: contain;
+  opacity: 0;
+  animation: gf-splash-image 4s cubic-bezier(.25,.6,.3,1) both;
+}
+@keyframes gf-splash-image {
+  0% { opacity: 0; transform: scale(.78); }
+  55% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1.12); }
+}
+@keyframes gf-splash-overlay {
+  0%, 84% { opacity: 1; }
+  100% { opacity: 0; }
+}
+#gf-intro-splash.is-done { display: none; }
