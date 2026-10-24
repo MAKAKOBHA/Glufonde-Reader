@@ -77,12 +77,12 @@ html.gf-intro-revealing #home:not([hidden]) {
     position: absolute;
     top: 0;
     left: 0;
-    width: 124px;
-    height: 116px;
+    width: 174px;
+    height: 154px;
     -webkit-mask-position: left top;
     mask-position: left top;
-    -webkit-mask-size: 72px 78px;
-    mask-size: 72px 78px;
+    -webkit-mask-size: 132px 118px;
+    mask-size: 132px 118px;
     pointer-events: none;
   }
   .home__body > .orn::before { content: none; }
