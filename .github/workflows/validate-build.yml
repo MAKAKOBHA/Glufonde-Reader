@@ -16,5 +16,5 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           for file in js/*.js tools/*.js; do node --check "$file"; done
-      - name: Validate and build chapters
+      - name: Check referenced assets\n        run: node tools/check-assets.js\n      - name: Validate and build chapters
         run: node tools/build.js
