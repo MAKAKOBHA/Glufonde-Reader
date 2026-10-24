@@ -21,7 +21,8 @@ for (const css of ['css/style.css','css/reader-enhancements.css','assets/fonts/f
   for (const m of source.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi)) check(m[1].trim(), css);
 }
 for (const m of read('js/config.js').matchAll(/ambience:\s*['"]([^'"]+)['"]/g)) check('/' + m[1], 'index.html');
-for (const m of read('js/lore.js').matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)) check('/' + m[1], 'index.html');
+const loreSource = read('js/lore.js').replace(/^\s*\/\*[\s\S]*?\*\//, '');
+for (const m of loreSource.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)) check('/' + m[1], 'index.html');
 const manifest = JSON.parse(read('content/manifest.json'));
 for (const ch of manifest.chapters) {
   if (!ch.file || !exists('content/' + ch.file)) continue;
