@@ -12,4 +12,4 @@
 }
 #gf-dice[hidden] { display: none !important; }
 #gf-dice:focus-visible { outline: 2px solid #d4aa55; outline-offset: 3px; }
-@media (max-width: 1439px), (pointer: coarse) { #gf-dice { display: none !important; } }
+@media (max-width: 1099px), (pointer: coarse) { #gf-dice { display: none !important; } }
