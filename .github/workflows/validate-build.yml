@@ -1,20 +1,37 @@
-name: Validate RuleBook build
+name: Validate and publish RuleBook
 
 on:
+  pull_request:
   push:
     branches: [main]
-  pull_request:
+
+permissions:
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Check JavaScript syntax
         run: |
           for file in js/*.js tools/*.js; do node --check "$file"; done
-      - name: Check referenced assets\n        run: node tools/check-assets.js\n      - name: Validate Markdown and published book synchronization
-        run: node tools/build.js --check
+      - name: Check referenced assets
+        run: node tools/check-assets.js
+      - name: Build RuleBook automatically
+        run: node tools/build.js
+      - name: Commit generated book on main
+        if: github.event_name == 'push'
+        run: |
+          if ! git diff --quiet -- js/book-data.js; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add js/book-data.js
+            git commit -m "chore: rebuild RuleBook from Markdown [skip ci]"
+            git push
+          fi
