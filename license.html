@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Лицензия и авторские права — Glufonde Fracture</title>
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/storage.js"></script>
+  <script src="assets/fonts/fonts.js"></script>
+  <script src="js/fonts.js"></script>
+  <script src="js/theme-init.js"></script>
+</head>
+<body>
+  <main class="legal">
+    <nav class="legal__top" aria-label="Навигация">
+      <a href="index.html#/">← На главный экран</a>
+      <a href="index.html" id="back-reading">Вернуться к чтению</a>
+    </nav>
+
+    <h1>Лицензия и авторские права</h1>
+
+    <!-- Пока показывается только эта заглушка. Читать книгу это не ограничивает. -->
+    <p class="legal__stub" id="legal-stub">Условия использования материалов Glufonde Fracture будут опубликованы позднее</p>
+
+    <!-- Заполняется автоматически из js/config.js (раздел license). Пустые значения не показываются. -->
+    <dl class="legal__meta" id="legal-meta"></dl>
+
+    <!-- Полный текст лицензии: добавьте абзацы в js/config.js (license.paragraphs). -->
+    <div class="legal__text" id="legal-text"></div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script>
+    (function () {
+      var L = (window.GF_CONFIG && window.GF_CONFIG.license) || {};
+      var rows = [['Автор / правообладатель', L.holder], ['Год', L.year], ['Версия условий', L.version]];
+      var dl = document.getElementById('legal-meta');
+      rows.forEach(function (r) {
+        if (!r[1]) return;
+        var dt = document.createElement('dt'); dt.textContent = r[0];
+        var dd = document.createElement('dd'); dd.textContent = r[1];
+        dl.appendChild(dt); dl.appendChild(dd);
+      });
+      if (!dl.children.length) dl.hidden = true;
+      var box = document.getElementById('legal-text');
+      (L.paragraphs || []).forEach(function (t) { var p = document.createElement('p'); p.textContent = t; box.appendChild(p); });
+      // Если полный текст добавлен, заглушка больше не нужна
+      if (L.paragraphs && L.paragraphs.length) document.getElementById('legal-stub').hidden = true;
+    })();
+  </script>
+</body>
+</html>

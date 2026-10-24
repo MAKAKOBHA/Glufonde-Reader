@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Glufonde Fracture — Rulebook</title>
+  <meta name="description" content="Glufonde Fracture — Rulebook. Книга правил настольной ролевой игры.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/storage.js"></script>
+  <script src="assets/fonts/fonts.js"></script>
+  <script src="js/fonts.js"></script>
+  <script src="js/theme-init.js"></script>
+</head>
+<body data-view="home">
+  <a class="skip-link" href="#main">Перейти к тексту</a>
+  <div id="sr-status" class="sr-only" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <p class="noscript">Для работы читалки нужен JavaScript. Включите его в настройках браузера.</p>
+  </noscript>
+
+  <!-- ===================== ГЛАВНЫЙ ЭКРАН ===================== -->
+  <div id="home" class="home" hidden>
+    <div class="home__cover" aria-hidden="true">
+      <img id="home-cover" src="assets/img/cover.jpg" alt="">
+    </div>
+    <div class="home__body">
+      <span class="orn" aria-hidden="true"></span>
+      <h1 class="home__title" id="home-title">Glufonde Fracture</h1>
+      <p class="home__tagline" id="home-tagline">Книга правил настольной ролевой игры</p>
+
+      <dl class="home__meta" id="home-meta"></dl>
+
+      <div class="home__actions">
+        <a class="btn btn--primary" id="btn-read" href="#/read/o-knige">RuleBook</a>
+        <a class="btn btn--primary" id="btn-lore" href="#/" hidden>История Глюфонде</a>
+        <a class="btn" id="btn-continue" href="#/" hidden>
+          <span class="btn__label">Продолжить чтение</span>
+          <span class="btn__sub" id="continue-title"></span>
+        </a>
+      </div>
+      <div class="home__actions home__actions--secondary">
+        <button class="btn btn--ghost" type="button" id="home-toc">Оглавление</button>
+        <button class="btn btn--ghost" type="button" id="home-search">Поиск</button>
+        <button class="btn btn--ghost" type="button" id="home-settings">Настройки</button>
+      </div>
+
+      <p class="home__legal"><a href="license.html">Лицензия и авторские права</a></p>
+    </div>
+  </div>
+
+  <!-- ===================== ЧИТАЛКА ===================== -->
+  <div id="reader" class="reader" hidden>
+    <header class="topbar" id="topbar">
+      <button class="icon-btn" type="button" id="btn-menu" aria-label="Меню: оглавление, поиск, закладки" aria-expanded="false" aria-controls="sidebar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <a class="topbar__brand" href="#/" aria-label="На главный экран">
+        <span class="topbar__brand-main">Glufonde Fracture</span>
+      </a>
+      <div class="topbar__crumb" id="crumb" aria-live="off"></div>
+      <div class="topbar__tools">
+        <button class="icon-btn" type="button" id="btn-prev" aria-label="Предыдущий раздел">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <button class="icon-btn" type="button" id="btn-next" aria-label="Следующий раздел">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="icon-btn" type="button" id="btn-search" aria-label="Поиск (клавиша /)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg>
+        </button>
+        <button class="icon-btn" type="button" id="btn-ambience" aria-label="Включить фоновую музыку" aria-pressed="false" title="Фоновая музыка">
+          <svg class="ico-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h3l5-4v14l-5-4H4zM16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h3l5-4v14l-5-4H4zM16 9l5 6M21 9l-5 6"/></svg>
+        </button>
+        <button class="icon-btn" type="button" id="btn-bookmark" aria-label="Добавить закладку" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v16l-5-4-5 4z"/></svg>
+        </button>
+        <button class="icon-btn" type="button" id="btn-settings" aria-label="Настройки чтения">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+        </button>
+      </div>
+      <div class="progress" id="progress" role="progressbar" aria-label="Прогресс чтения книги" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <span class="progress__bar" id="progress-bar"></span>
+      </div>
+    </header>
+
+    <div class="reader__body">
+      <aside class="sidebar" id="sidebar" aria-label="Навигация по книге">
+        <div class="tabs" role="tablist" aria-label="Разделы меню">
+          <button class="tabs__tab" type="button" role="tab" id="tab-toc" aria-controls="panel-toc" aria-selected="true">Содержание</button>
+          <button class="tabs__tab" type="button" role="tab" id="tab-search" aria-controls="panel-search" aria-selected="false" tabindex="-1">Поиск</button>
+          <button class="tabs__tab" type="button" role="tab" id="tab-bookmarks" aria-controls="panel-bookmarks" aria-selected="false" tabindex="-1">Закладки</button>
+        </div>
+
+        <div class="sidebar__panels">
+          <section id="panel-toc" role="tabpanel" aria-labelledby="tab-toc" class="panel">
+            <nav aria-label="Оглавление"><ul class="toc" id="toc"></ul></nav>
+          </section>
+
+          <section id="panel-search" role="tabpanel" aria-labelledby="tab-search" class="panel" hidden>
+            <form class="search" id="search-form" role="search" autocomplete="off">
+              <label class="search__label" for="search-input">Поиск по книге</label>
+              <input class="search__input" id="search-input" type="search" placeholder="Слово или фраза" enterkeyhint="search" spellcheck="false">
+            </form>
+            <p class="search__status" id="search-status" role="status" aria-live="polite">Введите слово или фразу.</p>
+            <div id="search-results" class="search__results"></div>
+          </section>
+
+          <section id="panel-bookmarks" role="tabpanel" aria-labelledby="tab-bookmarks" class="panel" hidden>
+            <p class="panel__hint" id="bookmarks-hint"></p>
+            <ul class="bookmarks" id="bookmarks"></ul>
+          </section>
+        </div>
+
+        <div class="sidebar__footer">
+          <div class="booknav" id="booknav" aria-label="Разделы"></div>
+          <a href="#/">На главный экран</a>
+          <a href="license.html">Лицензия и авторские права</a>
+        </div>
+      </aside>
+
+      <div class="backdrop" id="backdrop" hidden></div>
+
+      <main class="content" id="main" tabindex="-1">
+        <div class="hl-bar" id="hl-bar" hidden>
+          <span id="hl-text"></span>
+          <button type="button" class="link-btn" id="hl-clear">Убрать подсветку</button>
+        </div>
+        <article class="prose" id="article"></article>
+        <nav class="pager" id="pager" aria-label="Переход между главами"></nav>
+        <footer class="content__footer">
+          <button type="button" class="link-btn" id="to-toc">К оглавлению</button>
+          <span aria-hidden="true">·</span>
+          <a href="license.html">Лицензия и авторские права</a>
+        </footer>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- ===================== НАСТРОЙКИ ===================== -->
+  <dialog class="settings" id="settings" aria-labelledby="settings-title">
+    <form method="dialog" class="settings__form">
+      <div class="settings__head">
+        <h2 id="settings-title">Настройки чтения</h2>
+        <button class="icon-btn" value="close" aria-label="Закрыть настройки">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <fieldset class="settings__group">
+        <legend>Фоновая музыка раздела</legend>
+        <p class="settings__hint" id="amb-status" role="status" aria-live="polite">Музыка включится в разделе.</p>
+        <div class="stepper">
+          <button type="button" class="btn btn--small" id="amb-toggle">Включить</button>
+          <input type="range" id="set-volume" min="0" max="100" step="5" aria-label="Громкость фоновой музыки">
+          <output id="out-volume">40%</output>
+        </div>
+        <p class="settings__hint">У RuleBook и «Истории Глюфонде» своя музыка. Если файла нет, чтение не страдает.</p>
+      </fieldset>
+
+      <fieldset class="settings__group">
+        <legend>Тема</legend>
+        <div class="seg" id="set-theme">
+          <button type="button" class="seg__btn" data-theme="dark" aria-pressed="false">Тёмная</button>
+          <button type="button" class="seg__btn" data-theme="light" aria-pressed="false">Светлая</button>
+          <button type="button" class="seg__btn" data-theme="auto" aria-pressed="false">Как в системе</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="settings__group">
+        <legend>Шрифты</legend>
+        <label class="field" for="set-font-head"><span>Шрифт заголовков</span>
+          <select class="select" id="set-font-head"></select></label>
+        <label class="field" for="set-font-body"><span>Шрифт основного текста</span>
+          <select class="select" id="set-font-body"></select></label>
+        <p class="settings__hint">Свои шрифты можно добавить в папку assets/fonts (подробности в README.md).</p>
+      </fieldset>
+
+      <fieldset class="settings__group">
+        <legend>Размер текста: <output id="out-font">100%</output></legend>
+        <div class="stepper">
+          <button type="button" class="btn btn--small" id="font-minus" aria-label="Уменьшить текст">A−</button>
+          <input type="range" id="set-font" min="80" max="160" step="10" aria-label="Размер текста">
+          <button type="button" class="btn btn--small" id="font-plus" aria-label="Увеличить текст">A+</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="settings__group">
+        <legend>Ширина колонки: <output id="out-measure">720 px</output></legend>
+        <input type="range" id="set-measure" min="520" max="960" step="20" aria-label="Ширина колонки текста">
+        <p class="settings__hint">На телефоне колонка всегда занимает всю ширину экрана.</p>
+      </fieldset>
+
+      <fieldset class="settings__group">
+        <legend>Межстрочный интервал</legend>
+        <div class="seg" id="set-lh">
+          <button type="button" class="seg__btn" data-lh="1.5" aria-pressed="false">Плотный</button>
+          <button type="button" class="seg__btn" data-lh="1.7" aria-pressed="false">Обычный</button>
+          <button type="button" class="seg__btn" data-lh="1.9" aria-pressed="false">Свободный</button>
+        </div>
+      </fieldset>
+
+      <p class="settings__note" id="settings-note" hidden>В этом браузере нельзя сохранять данные: настройки, закладки и место чтения пропадут после закрытия страницы.</p>
+
+      <div class="settings__foot">
+        <button type="button" class="btn btn--ghost" id="settings-reset">Сбросить</button>
+        <button class="btn btn--primary" value="close">Готово</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/config.js"></script>
+  <script src="js/book-data.js"></script>
+  <script src="js/lore.js"></script>
+  <script src="js/markdown.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/ambience.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

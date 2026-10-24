@@ -1,0 +1,29 @@
+/*
+ * ПОДКЛЮЧЕНИЕ ШРИФТОВ (файл можно редактировать).
+ * Чтобы добавить свой шрифт:
+ *   1. Положите файл (.woff2, .woff или .ttf) в эту папку.
+ *   2. Добавьте блок @font-face по образцу ниже (имя семейства — любое, лучше с префиксом «GF »).
+ *   3. Добавьте шрифт в список в файле fonts.js — он появится в «Настройках чтения».
+ */
+@font-face { font-family: 'GF Liberation Serif'; font-style: normal; font-weight: 400; font-display: swap; src: url('LiberationSerif-Regular.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Serif'; font-style: normal; font-weight: 700; font-display: swap; src: url('LiberationSerif-Bold.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Serif'; font-style: italic; font-weight: 400; font-display: swap; src: url('LiberationSerif-Italic.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Serif'; font-style: italic; font-weight: 700; font-display: swap; src: url('LiberationSerif-BoldItalic.woff') format('woff'); }
+
+@font-face { font-family: 'GF Liberation Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('LiberationSans-Regular.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('LiberationSans-Bold.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Sans'; font-style: italic; font-weight: 400; font-display: swap; src: url('LiberationSans-Italic.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Sans'; font-style: italic; font-weight: 700; font-display: swap; src: url('LiberationSans-BoldItalic.woff') format('woff'); }
+
+@font-face { font-family: 'GF Liberation Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('LiberationMono-Regular.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Mono'; font-style: normal; font-weight: 700; font-display: swap; src: url('LiberationMono-Bold.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Mono'; font-style: italic; font-weight: 400; font-display: swap; src: url('LiberationMono-Italic.woff') format('woff'); }
+@font-face { font-family: 'GF Liberation Mono'; font-style: italic; font-weight: 700; font-display: swap; src: url('LiberationMono-BoldItalic.woff') format('woff'); }
+
+@font-face { font-family: 'GF DejaVu Serif'; font-style: normal; font-weight: 400; font-display: swap; src: url('DejaVuSerif-Regular.woff') format('woff'); }
+@font-face { font-family: 'GF DejaVu Serif'; font-style: normal; font-weight: 700; font-display: swap; src: url('DejaVuSerif-Bold.woff') format('woff'); }
+@font-face { font-family: 'GF DejaVu Serif'; font-style: italic; font-weight: 400; font-display: swap; src: url('DejaVuSerif-Italic.woff') format('woff'); }
+@font-face { font-family: 'GF DejaVu Serif'; font-style: italic; font-weight: 700; font-display: swap; src: url('DejaVuSerif-BoldItalic.woff') format('woff'); }
+
+@font-face { font-family: 'GF Lora'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('Lora-Variable.woff') format('woff'); }
+@font-face { font-family: 'GF Lora'; font-style: italic; font-weight: 400 700; font-display: swap; src: url('Lora-Italic-Variable.woff') format('woff'); }
