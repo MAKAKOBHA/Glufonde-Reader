@@ -416,9 +416,12 @@ body.sidebar-hidden .content { margin-left: 0; }
 
 /* Таблицы Эйдоса: стадии и игровые эффекты по центру,
    художественные описания остаются по левому краю. */
-.table--eidos-stages tbody tr:first-child > *,
+.table--eidos-stages thead th,
 .table--eidos-stages tbody tr:last-child > * {
   text-align: center;
+}
+.table--eidos-stages tbody tr:first-child > * {
+  text-align: left;
 }
 .table--eidos-interactions tbody > tr > :first-child,
 .table--eidos-interactions tbody > tr > :nth-child(2),
