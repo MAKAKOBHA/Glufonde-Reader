@@ -370,6 +370,60 @@ body.sidebar-hidden .content { margin-left: 0; }
   }
 }
 
+
+/* Каталог Мыслей Эйдоса: на компьютере сохраняем исходную таблицу. */
+.eidos-mobile { display: none; }
+@media (max-width: 640px) {
+  .table-wrap--eidos > .table { display: none; }
+  .table-wrap--eidos .eidos-mobile {
+    display: block;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-size: .9em;
+    line-height: 1.5;
+  }
+  .eidos-mobile__title {
+    padding: .7em .85em;
+    text-align: center;
+    font-size: 1.13em;
+    font-weight: 700;
+    color: var(--head);
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+    border-bottom: 1px solid var(--rule);
+    overflow-wrap: anywhere;
+  }
+  .eidos-mobile__stage { margin: 0; }
+  .eidos-mobile__stage-name {
+    margin: 0;
+    padding: .55em .85em;
+    font: 700 1.03em var(--font-head);
+    color: var(--head);
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    border-bottom: 1px solid var(--rule);
+  }
+  .eidos-mobile__description {
+    padding: .85em 1em 1em;
+    min-height: 3.5em;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .eidos-mobile__effect-label {
+    padding: .4em .85em;
+    color: var(--ink-soft);
+    font-size: .85em;
+    font-weight: 700;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .eidos-mobile__effect {
+    padding: .75em 1em;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    border-bottom: 2px solid var(--accent);
+  }
+  .eidos-mobile__stage:last-child .eidos-mobile__effect { border-bottom: 0; }
+}
+
 /* Иллюстрации */
 .figure { margin: 1.6em 0; text-align: center; }
 .figure img { border: 1px solid var(--rule); }
