@@ -29,7 +29,7 @@ for (const ch of manifest.chapters) {
     assert(!parsed.html.includes('eidos-mobile__title'), 'Повторение названия Эйдоса в мобильной карточке');
     // На десктопе три стадии становятся заголовками колонок.
     // Названия Мыслей больше не дублируются внутри таблиц.
-    const stageHeads = [...parsed.html.matchAll(/<table class="table table--eidos-stages"><thead><tr[^>]*>([\\s\\S]*?)<\\/tr><\\/thead>/g)];
+    const stageHeads = [...parsed.html.matchAll(/<table class="table table--eidos-stages"><thead><tr[^>]*>(.*?)<\/tr><\/thead>/g)];
     assert.equal(stageHeads.length, 27, 'Нет 27 таблиц со стадиями в шапке');
     stageHeads.forEach(function (match) {
       assert(match[1].includes('Сомнение') && match[1].includes('Изучение') &&
