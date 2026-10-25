@@ -470,6 +470,65 @@ body.sidebar-hidden .content { margin-left: 0; }
   }
 }
 
+/* Просторное чтение на компьютере: текст и таблицы используют доступное
+   пространство, но не вылезают за края контента и не затрагивают телефоны. */
+@media (min-width: 1100px) {
+  .prose,
+  .hl-bar,
+  .pager,
+  .content__footer {
+    max-width: min(100%, calc(var(--measure) + 220px));
+  }
+
+  /* Таблицы резонансов, диссонансов и парадоксов шире обычного текста.
+     Так длинные названия и описания не дробятся на короткие обрывки. */
+  .prose .table-wrap:has(> .table--eidos-interactions) {
+    width: min(1320px, calc(100vw - var(--sidebar-w) - 64px));
+    max-width: calc(100vw - var(--sidebar-w) - 64px);
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 0;
+    margin-right: 0;
+    overflow-x: auto;
+  }
+  body.sidebar-hidden .prose .table-wrap:has(> .table--eidos-interactions) {
+    width: min(1320px, calc(100vw - 64px));
+    max-width: calc(100vw - 64px);
+  }
+
+  .table--eidos-interactions {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 920px;
+    hyphens: manual;
+    overflow-wrap: break-word;
+  }
+  .table--eidos-interactions th,
+  .table--eidos-interactions td {
+    padding: .75em .8em;
+  }
+  /* Резонансы: сочетание / эффект / описание. */
+  .table--eidos-interactions:has(thead th:nth-child(3):last-child) th:nth-child(1),
+  .table--eidos-interactions:has(thead th:nth-child(3):last-child) td:nth-child(1) { width: 25%; }
+  .table--eidos-interactions:has(thead th:nth-child(3):last-child) th:nth-child(2),
+  .table--eidos-interactions:has(thead th:nth-child(3):last-child) td:nth-child(2) { width: 19%; }
+  .table--eidos-interactions:has(thead th:nth-child(3):last-child) th:nth-child(3),
+  .table--eidos-interactions:has(thead th:nth-child(3):last-child) td:nth-child(3) { width: 56%; }
+
+  /* Диссонансы: сочетание / эффект / описание / парадокс / описание. */
+  .table--eidos-interactions:has(thead th:nth-child(5)) th:nth-child(1),
+  .table--eidos-interactions:has(thead th:nth-child(5)) td:nth-child(1) { width: 19%; }
+  .table--eidos-interactions:has(thead th:nth-child(5)) th:nth-child(2),
+  .table--eidos-interactions:has(thead th:nth-child(5)) td:nth-child(2) { width: 15%; }
+  .table--eidos-interactions:has(thead th:nth-child(5)) th:nth-child(3),
+  .table--eidos-interactions:has(thead th:nth-child(5)) td:nth-child(3) { width: 27%; }
+  .table--eidos-interactions:has(thead th:nth-child(5)) th:nth-child(4),
+  .table--eidos-interactions:has(thead th:nth-child(5)) td:nth-child(4) { width: 15%; }
+  .table--eidos-interactions:has(thead th:nth-child(5)) th:nth-child(5),
+  .table--eidos-interactions:has(thead th:nth-child(5)) td:nth-child(5) { width: 24%; }
+}
+
 /* Иллюстрации */
 .figure { margin: 1.6em 0; text-align: center; }
 .figure img { border: 1px solid var(--rule); }
