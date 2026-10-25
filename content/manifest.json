@@ -1,20 +1,71 @@
 {
   "_help": "Порядок глав в книге. Чтобы добавить главу: положите файл .md в эту папку и добавьте строку ниже. Название главы берётся из первой строки файла (# Название).",
   "chapters": [
-    { "id": "o-knige",        "file": "00-o-knige.md" },
-    { "id": "predislovie",    "file": "01-predislovie.md" },
-    { "id": "glava-1",        "file": "02-glava-1.md" },
-    { "id": "glava-2",        "file": "03-glava-2.md" },
-    { "id": "glava-3",        "file": "04-glava-3.md" },
-    { "id": "glava-4",        "file": "05-glava-4.md" },
-    { "id": "glava-5",        "file": "06-glava-5.md" },
-    { "id": "glava-6",        "file": "07-glava-6.md" },
-    { "id": "glava-7",        "file": "08-glava-7.md" },
-    { "id": "glava-8",        "file": "09-glava-8.md" },
-    { "id": "glava-9",        "file": "10-glava-9.md" },
-    { "id": "glava-10",       "file": "11-glava-10.md" },
-    { "id": "glava-11",       "file": "12-glava-11.md" },
-    { "id": "glava-12",       "file": "13-glava-12.md" },
-    { "id": "prilozheniya",   "file": "14-prilozheniya.md" }
+    {
+      "id": "o-knige",
+      "file": "00-o-knige.md"
+    },
+    {
+      "id": "predislovie",
+      "file": "01-predislovie.md"
+    },
+    {
+      "id": "glava-1",
+      "file": "02-glava-1.md"
+    },
+    {
+      "id": "glava-2",
+      "file": "03-glava-2.md"
+    },
+    {
+      "id": "glava-3",
+      "file": "04-glava-3.md"
+    },
+    {
+      "id": "glava-4",
+      "file": "05-glava-4.md"
+    },
+    {
+      "id": "glava-5",
+      "file": "06-glava-5.md"
+    },
+    {
+      "id": "glava-6",
+      "file": "07-glava-6.md"
+    },
+    {
+      "id": "glava-7",
+      "file": "08-glava-7.md"
+    },
+    {
+      "id": "glava-8",
+      "file": "09-glava-8.md"
+    },
+    {
+      "id": "glava-9",
+      "file": "10-glava-9.md"
+    },
+    {
+      "id": "glava-10",
+      "file": "11-glava-10.md"
+    },
+    {
+      "id": "glava-11",
+      "file": "12-glava-11.md"
+    },
+    {
+      "id": "prilozheniya",
+      "file": "14-prilozheniya.md"
+    },
+    {
+      "id": "gm-guide",
+      "file": "15-rukovodstvo-mastera.md",
+      "master": true
+    },
+    {
+      "id": "gm-eidos-catalog",
+      "file": "16-katalog-eidosov.md",
+      "master": true
+    }
   ]
 }

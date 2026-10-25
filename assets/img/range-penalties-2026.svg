@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="940" viewBox="0 0 940 940" role="img" aria-labelledby="title desc">
+<title id="title">Штрафы на дальность стрельбы</title>
+<desc id="desc">Схема зон: в центре преимущество и проверка Физиологии против Моторики, далее обычная сложность, за ней повышение сложности на 2 за каждые следующие две клетки.</desc>
+<defs>
+ <radialGradient id="red"><stop stop-color="#9a2115"/><stop offset="1" stop-color="#66170e"/></radialGradient>
+ <linearGradient id="blue" x2="1" y2="1"><stop stop-color="#123d62"/><stop offset="1" stop-color="#082947"/></linearGradient>
+ <linearGradient id="green" x2="0" y2="1"><stop stop-color="#31591b"/><stop offset="1" stop-color="#1d3e14"/></linearGradient>
+ <radialGradient id="gold"><stop stop-color="#e6b643"/><stop offset="1" stop-color="#cf982b"/></radialGradient>
+ <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence baseFrequency=".32" numOctaves="3" seed="8" result="n"/><feColorMatrix in="n" type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".13"/></feComponentTransfer></filter>
+</defs>
+<rect x="1" y="1" width="938" height="938" fill="url(#red)" stroke="#e0ad45" stroke-width="2"/>
+<rect x="148" y="146" width="644" height="648" fill="url(#blue)"/>
+<rect x="291" y="290" width="358" height="362" fill="url(#green)"/>
+<rect x="365" y="385" width="210" height="194" fill="url(#gold)"/>
+<rect x="1" y="1" width="938" height="938" filter="url(#grain)" opacity=".48"/>
+<g stroke="#e5ab32" stroke-width="1.2" stroke-opacity=".78"><path d="M1.00 1V939 M1 1.00H939"/><path d="M73.15 1V939 M1 73.15H939"/><path d="M145.30 1V939 M1 145.30H939"/><path d="M217.45 1V939 M1 217.45H939"/><path d="M289.60 1V939 M1 289.60H939"/><path d="M361.75 1V939 M1 361.75H939"/><path d="M433.90 1V939 M1 433.90H939"/><path d="M506.05 1V939 M1 506.05H939"/><path d="M578.20 1V939 M1 578.20H939"/><path d="M650.35 1V939 M1 650.35H939"/><path d="M722.50 1V939 M1 722.50H939"/><path d="M794.65 1V939 M1 794.65H939"/><path d="M866.80 1V939 M1 866.80H939"/><path d="M938.95 1V939 M1 938.95H939"/></g>
+<g font-family="Georgia,Times New Roman,serif" font-weight="700" fill="#E7B64F" text-anchor="middle">
+<rect x="298" y="24" width="344" height="54" fill="#5c160d" opacity=".9"/>
+<text x="470" y="61" font-size="39" letter-spacing="1">СЛОЖНОСТЬ +2</text>
+<rect x="268" y="72" width="404" height="32" fill="#5c160d" opacity=".88"/>
+<text x="470" y="94" font-size="22" letter-spacing=".5">КАЖДЫЕ СЛЕДУЮЩИЕ 2 КЛЕТКИ</text>
+<rect x="275" y="175" width="390" height="47" fill="#06203b" opacity=".87"/>
+<text x="470" y="207" font-size="29">ОБЫЧНАЯ СЛОЖНОСТЬ</text>
+<rect x="354" y="304" width="232" height="36" fill="#153b14" opacity=".9"/>
+<text x="470" y="331" font-size="26">ПРЕИМУЩЕСТВО</text>
+<rect x="345" y="340" width="250" height="46" fill="#18360f" opacity=".9"/>
+<text x="470" y="359" font-size="19">Проверка</text>
+<text x="470" y="380" font-size="18">Физиологии против Моторики</text>
+</g>
+<g stroke="#15110d" stroke-width="3" stroke-linejoin="round">
+<circle cx="470" cy="470" r="28" fill="#cd1017"/>
+<rect x="437" y="510" width="66" height="66" fill="#8d4d2b" stroke="#0c100b"/><path d="M441 514L499 572 M499 514L441 572" fill="none" stroke="#160e08" stroke-width="2"/>
+<circle cx="470" cy="614" r="28" fill="#1749e0"/>
+<rect x="508" y="654" width="66" height="66" fill="#85502c" stroke="#110d09"/><path d="M512 658L570 716 M570 658L512 716" fill="none" stroke="#190c07" stroke-width="2"/>
+<circle cx="540" cy="758" r="28" fill="#f7b300"/>
+<rect x="365" y="801" width="66" height="66" fill="#8d4d2b" stroke="#0c100b"/><path d="M369 805L427 863 M427 805L369 863" fill="none" stroke="#160e08" stroke-width="2"/>
+<circle cx="398" cy="902" r="28" fill="#f7b300"/>
+</g>
+<g font-family="Georgia,serif" text-anchor="middle" font-size="28" font-weight="700" fill="#211705"><text x="540" y="768">+1</text><text x="398" y="911">+1</text></g>
+</svg>
