@@ -226,5 +226,31 @@ html.gf-intro-revealing #home:not([hidden]) {
 
 /* Предупреждение о спойлерах в настройках режима Мастера. */
 .gf-gm-toggle { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; font-weight: 600; }
-.gf-gm-toggle input { width: 17px; height: 17px; accent-color: #b99145; }
+.gf-gm-toggle input {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex: 0 0 20px;
+  border: 2px solid #c8a04a;
+  border-radius: 2px;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.gf-gm-toggle input::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: #d7ad51;
+  opacity: 0;
+  transform: scale(.5);
+  transition: opacity .14s ease, transform .14s ease;
+}
+.gf-gm-toggle input:checked::before { opacity: 1; transform: scale(1); }
+.gf-gm-toggle input:focus-visible { outline: 2px solid #e5c578; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .gf-gm-toggle input::before { transition: none; } }
 .gf-gm-warning { margin: 9px 0 0; color: #d65b58; font-size: .79rem; line-height: 1.5; }
