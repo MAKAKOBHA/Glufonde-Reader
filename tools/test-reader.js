@@ -27,6 +27,17 @@ for (const ch of manifest.chapters) {
     assert.equal((parsed.html.match(/class="eidos-mobile__stage-name"/g) || []).length, 81);
     assert.equal((parsed.html.match(/class="eidos-mobile__effect"/g) || []).length, 81);
     assert(!parsed.html.includes('eidos-mobile__title'), 'Повторение названия Эйдоса в мобильной карточке');
+    // На десктопе три стадии становятся заголовками колонок.
+    // Названия Мыслей больше не дублируются внутри таблиц.
+    const stageHeads = [...parsed.html.matchAll(/<table class="table table--eidos-stages"><thead><tr[^>]*>([\\s\\S]*?)<\\/tr><\\/thead>/g)];
+    assert.equal(stageHeads.length, 27, 'Нет 27 таблиц со стадиями в шапке');
+    stageHeads.forEach(function (match) {
+      assert(match[1].includes('Сомнение') && match[1].includes('Изучение') &&
+        match[1].includes('Осознание'), 'В шапке отсутствуют стадии Эйдоса');
+      assert.equal((match[1].match(/<th scope="col">/g) || []).length, 3);
+    });
+    assert(!parsed.html.includes('<th scope="col">Мирожительство</th>'),
+      'Название Эйдоса повторяется в таблице');
   }
 }
 const css = read('css/style.css');
