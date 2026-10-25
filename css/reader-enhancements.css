@@ -234,7 +234,7 @@ html.gf-intro-revealing #home:not([hidden]) {
   height: 20px;
   margin: 0;
   flex: 0 0 20px;
-  border: 2px solid #c8a04a;
+  border: 2px solid var(--accent);
   border-radius: 2px;
   background: transparent;
   display: grid;
@@ -245,12 +245,12 @@ html.gf-intro-revealing #home:not([hidden]) {
   content: '';
   width: 10px;
   height: 10px;
-  background: #d7ad51;
+  background: var(--accent);
   opacity: 0;
   transform: scale(.5);
   transition: opacity .14s ease, transform .14s ease;
 }
 .gf-gm-toggle input:checked::before { opacity: 1; transform: scale(1); }
-.gf-gm-toggle input:focus-visible { outline: 2px solid #e5c578; outline-offset: 3px; }
+.gf-gm-toggle input:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .gf-gm-toggle input::before { transition: none; } }
 .gf-gm-warning { margin: 9px 0 0; color: #d65b58; font-size: .79rem; line-height: 1.5; }
