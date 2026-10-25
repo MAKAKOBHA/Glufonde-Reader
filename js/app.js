@@ -470,10 +470,17 @@
     if (selectedTab() === 'bookmarks') renderBookmarks();
   }
   function renderBookmarks() {
-    var list = getBookmarks(), ul = els.bookmarks; ul.textContent = '';
+    var ul = els.bookmarks; ul.textContent = '';
+    // Скрытые главы Мастера и закладки другого раздела не учитываются:
+    // иначе игрок увидит сообщение о несуществующих для него закладках.
+    var list = getBookmarks().filter(function (b) {
+      var ch = chapterById(b.chapter);
+      return ch && ch.book === bookId &&
+        (!b.section || b.section === 'top' || ch.headings.some(function (h) { return h.id === b.section; }));
+    });
     els['bookmarks-hint'].textContent = list.length ? '' : 'Закладок пока нет. Нажмите значок закладки наверху, чтобы запомнить текущий раздел.';
     list.forEach(function (b) {
-      var ch = chapterById(b.chapter); if (!ch || ch.book !== bookId) return;
+      var ch = chapterById(b.chapter);
       var li = document.createElement('li'); li.className = 'bookmarks__item';
       var a = document.createElement('a'); a.className = 'bookmarks__link'; a.href = hrefTo(b.chapter, b.section);
       var t = document.createElement('span'); t.className = 'bookmarks__title'; t.textContent = sectionTitle(ch, b.section);

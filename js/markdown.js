@@ -174,16 +174,21 @@
         while (i < n && /^\s*\|/.test(lines[i])) { rows.push(splitRow(lines[i])); i++; }
         var labels = head.map(plain);
         var stack = head.length >= 4;
-        // Формат каталога Эйдосов: имя в шапке, 3 стадии, описание и эффект.
-        // Выводим рядом отдельное мобильное представление с сохранением
-        // исходной таблицы для компьютеров. Все значения берутся из Markdown.
+        // Распознаём тип таблицы по заголовкам, а не по названию главы.
+        // Обычные таблицы RuleBook не получают специальных классов.
         var isEidosStages = head.length === 3 && rows.length === 3 &&
           ['Сомнение', 'Изучение', 'Осознание'].every(function (stage, j) {
             return plain(rows[0][j] || '').toLowerCase() === stage.toLowerCase();
           });
+        var isEidosInteraction = labels[0] === 'Сочетание' && labels[1] === 'Эффект' &&
+          ((head.length === 3 && labels[2] === 'Описания') ||
+           (head.length === 5 && labels[2] === 'Описание' &&
+            labels[3] === 'Парадокс/эффект' && labels[4] === 'Описание парадокса'));
+        var tableClass = isEidosStages ? ' table--eidos-stages' :
+          (isEidosInteraction ? ' table--eidos-interactions' : '');
         var hid = addBlock(ctx, labels.join(' · '), 'th');
         var t = '<div class="table-wrap" role="region" tabindex="0" aria-label="Таблица: ' + esc(ctx.curHeadingText || '') + '">' +
-          '<table class="table' + (stack ? ' table--stack' : '') + '"><thead><tr data-b="' + hid + '">';
+          '<table class="table' + (stack ? ' table--stack' : '') + tableClass + '"><thead><tr data-b="' + hid + '">';
         head.forEach(function (h) { t += '<th scope="col">' + inline(h, true) + '</th>'; });
         t += '</tr></thead><tbody>';
         rows.forEach(function (r) {
@@ -202,7 +207,6 @@
         if (isEidosStages) {
           var mobile = '<div class="eidos-mobile" aria-label="Стадии Эйдоса: ' +
             esc(labels[0] || ctx.curHeadingText || '') + '">';
-          mobile += '<div class="eidos-mobile__title">' + inline(head[0]) + '</div>';
           rows[0].forEach(function (stage, j) {
             var description = rows[1][j] || '';
             var effect = rows[2][j] || '';

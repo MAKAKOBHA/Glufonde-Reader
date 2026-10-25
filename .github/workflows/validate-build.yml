@@ -23,6 +23,8 @@ jobs:
           for file in js/*.js tools/*.js; do node --check "$file"; done
       - name: Check referenced assets
         run: node tools/check-assets.js
+      - name: Check reader architecture and table markup
+        run: node tools/test-reader.js
       - name: Build RuleBook automatically
         run: node tools/build.js
       - name: Commit generated book on main
