@@ -186,19 +186,24 @@
             labels[3] === 'Парадокс/эффект' && labels[4] === 'Описание парадокса'));
         var tableClass = isEidosStages ? ' table--eidos-stages' :
           (isEidosInteraction ? ' table--eidos-interactions' : '');
-        var hid = addBlock(ctx, labels.join(' · '), 'th');
+        // Для Эйдоса название уже есть в заголовке ### над таблицей.
+        // Поэтому вместо дублирующей строки имени ставим стадии в thead.
+        var displayHead = isEidosStages ? rows[0] : head;
+        var displayRows = isEidosStages ? rows.slice(1) : rows;
+        var hid = addBlock(ctx, displayHead.map(plain).join(' · '), 'th');
         var t = '<div class="table-wrap" role="region" tabindex="0" aria-label="Таблица: ' + esc(ctx.curHeadingText || '') + '">' +
           '<table class="table' + (stack ? ' table--stack' : '') + tableClass + '"><thead><tr data-b="' + hid + '">';
-        head.forEach(function (h) { t += '<th scope="col">' + inline(h, true) + '</th>'; });
+        displayHead.forEach(function (h) { t += '<th scope="col">' + inline(h, true) + '</th>'; });
         t += '</tr></thead><tbody>';
-        rows.forEach(function (r) {
+        displayRows.forEach(function (r, rowIndex) {
           if (r.length !== head.length) ctx.warnings.push('Таблица «' + (ctx.curHeadingText || '') + '»: в строке «' + plain(r[0] || '') + '» ' + r.length + ' ячеек вместо ' + head.length);
           var rid = addBlock(ctx, r.map(plain).join(' · '), 'tr');
           t += '<tr data-b="' + rid + '">';
           for (var c = 0; c < head.length; c++) {
             var cell = r[c] == null ? '' : r[c];
-            var lab = labels[c] ? ' data-label="' + esc(labels[c]) + '"' : '';
-            if (c === 0) t += '<th scope="row"' + lab + '>' + inline(cell, true) + '</th>';
+            var label = isEidosStages ? (rowIndex === 0 ? 'Описание' : 'Эффект') : labels[c];
+            var lab = label ? ' data-label="' + esc(label) + '"' : '';
+            if (c === 0 && !isEidosStages) t += '<th scope="row"' + lab + '>' + inline(cell, true) + '</th>';
             else t += '<td' + lab + '>' + inline(cell, true) + '</td>';
           }
           t += '</tr>';
