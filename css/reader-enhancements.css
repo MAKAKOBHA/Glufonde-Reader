@@ -226,9 +226,9 @@ html.gf-intro-revealing #home:not([hidden]) {
 
 /* Номер главы над названием: крупнее, жирнее и читаемее в обеих темах. */
 .prose h1 .chapter-label {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: 'GF Brighton', Georgia, serif;
   font-size: clamp(1.05rem, 1.35vw, 1.35rem);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.3;
   letter-spacing: .12em;
   word-spacing: normal;
