@@ -343,7 +343,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 
 /* ---------- Разделы и фоновая музыка ---------- */
 .booknav { display: flex; gap: 6px; margin-bottom: 6px; }
-.booknav__link { flex: 1; text-align: center; padding: 8px 6px; border: 1px solid var(--rule); color: var(--ink); text-decoration: none; font-weight: 700; font-size: .92rem; }
+.booknav__link { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px 6px; border: 1px solid var(--rule); color: var(--ink); text-decoration: none; font-weight: 700; font-size: .92rem; }
 .booknav__link:hover { background: var(--surface-2); }
 .booknav__link.is-current { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 #btn-ambience .ico-off { display: none; }
