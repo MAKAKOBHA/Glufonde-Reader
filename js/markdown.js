@@ -214,7 +214,7 @@
               '</section>';
           });
           mobile += '</div>';
-          t += mobile;
+          t = t.replace('</table></div>', '</table>' + mobile + '</div>');
           t = t.replace('class="table-wrap"', 'class="table-wrap table-wrap--eidos"');
         }
         out.push(t);
