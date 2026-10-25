@@ -21,6 +21,7 @@
   ].forEach(function (id) { els[id] = $(id); });
 
   var settings = THEME.load();
+  var gmMode = STORE.get('gm-mode', false) === true;
   var chapters = [];           // главы текущего раздела
   var books = {};              // id раздела -> { id, title, ambience, chapters }
   var bookId = 'rules';        // текущий раздел
@@ -44,11 +45,17 @@
     var m = (CFG.books && CFG.books[id]) || {};
     return { title: m.title || d[id].title, ambience: m.ambience || d[id].ambience };
   }
+  // Блоки между :::master и ::: видны только в режиме Мастера.
+  function visibleMarkdown(source) {
+    return String(source || '').replace(/^:::master\s*\n([\s\S]*?)^:::\s*$/gm, function (all, inner) {
+      return gmMode ? inner : '';
+    });
+  }
   // Превращает Markdown глав в готовые страницы. prefix нужен, чтобы адреса глав разных разделов не совпадали.
   function prepBook(id, raw, prefix) {
     var meta = bookMeta(id);
-    return { id: id, title: meta.title, ambience: meta.ambience, chapters: (raw || []).map(function (c, i) {
-      var r = MD.render(c.md || '');
+    return { id: id, title: meta.title, ambience: meta.ambience, chapters: (raw || []).filter(function (c) { return gmMode || !c.master; }).map(function (c, i) {
+      var r = MD.render(visibleMarkdown(c.md));
       return { id: prefix + c.id, book: id, index: i, title: r.title || c.id, html: r.html, headings: r.headings, blocks: r.blocks };
     }) };
   }
@@ -495,6 +502,7 @@
     $('set-volume').value = s.ambVolume; els['out-volume'].textContent = s.ambVolume + '%';
     $('set-font').value = s.fontScale; $('out-font').textContent = s.fontScale + '%';
     $('set-measure').value = s.measure; $('out-measure').textContent = s.measure + ' px';
+    $('set-gm').checked = gmMode;
     els['settings-note'].hidden = STORE.isPersistent();
   }
   function change(patch) {
@@ -502,6 +510,24 @@
     THEME.apply(settings); saveSettings(); syncSettingsUI();
     // размер, интервал и шрифт меняют разбивку на страницы — пересчитываем, сохраняя место чтения
   }
+  $('set-gm').addEventListener('change', function (e) {
+    gmMode = e.target.checked;
+    STORE.set('gm-mode', gmMode);
+    var oldId = current && current.ch.id;
+    prepare();
+    useBook(bookId);
+    if (oldId && chapterById(oldId)) {
+      current = null;
+      route();
+    } else if (oldId) {
+      current = null;
+      location.hash = '#/';
+      route();
+    } else {
+      fillHome();
+    }
+    syncSettingsUI();
+  });
   function openSettings() { syncSettingsUI(); if (els.settings.showModal) els.settings.showModal(); else els.settings.setAttribute('open', ''); }
   Array.prototype.forEach.call(document.querySelectorAll('#set-theme .seg__btn'), function (b) { b.addEventListener('click', function () { change({ theme: b.dataset.theme }); }); });
   Array.prototype.forEach.call(document.querySelectorAll('#set-lh .seg__btn'), function (b) { b.addEventListener('click', function () { change({ lineHeight: Number(b.dataset.lh) }); }); });

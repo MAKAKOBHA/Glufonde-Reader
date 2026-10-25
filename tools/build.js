@@ -32,7 +32,7 @@ const chapters = manifest.chapters.map((c) => {
   if (!r.title) { console.error('✗ В файле', c.file, 'нет заголовка первого уровня (# Название)'); problems++; }
   r.warnings.forEach((w) => { console.warn('⚠', c.file + ':', w); problems++; });
   console.log('✓ ' + c.file.padEnd(24) + ' ' + (r.title || '(без названия)') + '  [' + r.headings.length + ' заголовков, ' + r.blocks.length + ' блоков]');
-  return { id: c.id, file: c.file, md: text };
+  return { id: c.id, file: c.file, md: text, ...(c.master === true ? { master: true } : {}) };
 }).filter(Boolean);
 
 const fingerprint = crypto.createHash('sha256').update(JSON.stringify(chapters)).digest('hex');
