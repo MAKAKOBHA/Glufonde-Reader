@@ -138,6 +138,21 @@ a { color: var(--link); }
 .topbar {
   position: fixed; inset: 0 0 auto 0; height: var(--topbar-h); z-index: 30; display: flex; align-items: center; gap: 4px;
   padding: 0 8px; background: var(--surface); border-bottom: 1px solid var(--rule);
+  isolation: isolate;
+}
+/* Маска над панелью работает на телефонах, планшетах (в том числе iPad в
+   десктопном режиме Safari) и компьютерах. Закрывает содержимое, видимое
+   при упругой прокрутке за пределами верхней границы страницы. */
+.topbar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--surface);
+  pointer-events: none;
 }
 .topbar__brand { font: 700 1.05rem var(--font-head); letter-spacing: .1em; text-transform: uppercase; color: var(--head); text-decoration: none; padding: 8px 10px; white-space: nowrap; }
 .topbar__brand:hover { text-decoration: underline; }
@@ -165,26 +180,7 @@ body.sidebar-hidden .content { margin-left: 0; }
   .content { margin-left: 0; padding: 20px 16px 56px; }
   .topbar__crumb { display: none; }
   .topbar__tools { flex: 1; justify-content: flex-end; }
-  /* Непрозрачная маска над закреплённой шапкой для любых мобильных
-     браузеров, включая встроенные webview с динамическими панелями.
-     Высота зависит от viewport, а не от фиксированных 180px. */
-  .topbar {
-    padding: 0 4px;
-    gap: 0;
-    background: var(--surface);
-    isolation: isolate;
-  }
-  .topbar::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 100%;
-    height: 100vh;
-    height: 100dvh;
-    background: var(--surface);
-    pointer-events: none;
-  }
+  .topbar { padding: 0 4px; gap: 0; }
   #btn-prev, #btn-next { display: none; }
 }
 @media (max-width: 899px) and (min-width: 520px) {
