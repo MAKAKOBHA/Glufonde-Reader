@@ -43,6 +43,14 @@ for (const ch of manifest.chapters) {
 const css = read('css/style.css');
 assert(css.includes('.eidos-mobile__description { text-align: left; }'));
 assert(css.includes('.table--eidos-interactions tbody td:nth-child(5)'));
+// Планшет Safari использует широкую компоновку: маска должна быть
+// глобальной, а не внутри @media (max-width: 899px).
+const topbarStyles = css.slice(css.indexOf('/* ---------- Читалка: каркас ---------- */'),
+  css.indexOf('@media (max-width: 899px)'));
+assert(topbarStyles.includes('.topbar::before {'), 'Верхняя заглушка недоступна на широких экранах iPad');
+assert(topbarStyles.includes('height: 100dvh;'), 'Высота заглушки не адаптируется к окну браузера');
+assert.equal(css.split('.topbar::before {').length - 1, 1,
+  'Заглушка верхней панели определена несколько раз');
 const app = read('js/app.js');
 assert(app.includes('gmMode || !c.master'), 'Пропала фильтрация мастерских глав');
 assert(app.includes("STORE.set('gm-mode', gmMode)"), 'Пропало сохранение режима Мастера');
