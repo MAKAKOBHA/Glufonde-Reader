@@ -49,7 +49,7 @@ const topbarStyles = css.slice(css.indexOf('/* ---------- Читалка: кар
   css.indexOf('@media (max-width: 899px)'));
 assert(topbarStyles.includes('.topbar::before {'), 'Верхняя заглушка недоступна на широких экранах iPad');
 assert(topbarStyles.includes('height: 100dvh;'), 'Высота заглушки не адаптируется к окну браузера');
-assert.equal((css.match(/\\.topbar::before\\s*\\{/g) || []).length, 1,
+assert.equal(css.split('.topbar::before {').length - 1, 1,
   'Заглушка верхней панели определена несколько раз');
 const app = read('js/app.js');
 assert(app.includes('gmMode || !c.master'), 'Пропала фильтрация мастерских глав');
