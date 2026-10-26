@@ -51,7 +51,19 @@ assert(topbarStyles.includes('.topbar::before {'), 'Верхняя заглуш�
 assert(topbarStyles.includes('height: 100dvh;'), 'Высота заглушки не адаптируется к окну браузера');
 assert.equal(css.split('.topbar::before {').length - 1, 1,
   'Заглушка верхней панели определена несколько раз');
+
+// Регрессия iOS Safari: внутренняя прокрутка вместо корневой.
+assert(css.includes('@supports (-webkit-touch-callout: none)'), 'Отсутствует режим iOS WebKit');
+assert(css.includes('html:has(body[data-view="reader"])'), 'Корневой документ не блокируется в режиме чтения');
+assert(css.includes('body[data-view="reader"] .content'), 'Нет отдельной области прокрутки статьи');
+assert(css.includes('overflow-y: auto;'), 'Область чтения не прокручивается');
+assert(css.includes('overscroll-behavior: none;'), 'Не ограничен выход прокрутки за края');
 const app = read('js/app.js');
+assert(app.includes('function hasReaderScroller()'), 'Пропал выбор контейнера прокрутки');
+assert(app.includes('readerScrollTo(y,'), 'Переход к заголовкам не учитывает внутреннюю прокрутку');
+assert(app.includes("els.main.addEventListener('scroll', onScroll"), 'Не отслеживается прокрутка статьи');
+assert(app.includes('Math.round(readerScrollY())'), 'Не сохраняется позиция чтения внутри статьи');
+
 assert(app.includes('gmMode || !c.master'), 'Пропала фильтрация мастерских глав');
 assert(app.includes("STORE.set('gm-mode', gmMode)"), 'Пропало сохранение режима Мастера');
 console.log('✓ Аудит завершён: ' + seen.size + ' глав, ' + stageTables +
