@@ -39,6 +39,21 @@
   function announce(msg) { els['sr-status'].textContent = ''; setTimeout(function () { els['sr-status'].textContent = msg; }, 30); }
   function isMobile() { return window.matchMedia('(max-width: 899px)').matches; }
 
+  // На iOS чтение прокручивается в .content, а не в корневом документе.
+  // Остальные браузеры продолжают использовать обычную прокрутку окна.
+  function hasReaderScroller() {
+    return document.body.dataset.view === 'reader' &&
+      window.getComputedStyle(els.main).overflowY === 'auto';
+  }
+  function readerScrollY() {
+    return hasReaderScroller() ? els.main.scrollTop : window.pageYOffset;
+  }
+  function readerScrollTo(top, behavior) {
+    var opts = { top: Math.max(0, top), behavior: behavior || 'auto' };
+    if (hasReaderScroller()) els.main.scrollTo(opts);
+    else window.scrollTo(opts);
+  }
+
   /* ---------- Подготовка книги ---------- */
   function bookMeta(id) {
     var d = { rules: { title: 'RuleBook', ambience: '' }, lore: { title: 'История Глюфонде', ambience: '' } };
@@ -224,12 +239,12 @@
       activeSection = secId;
     } else if (!sameChapter) {
       var rb = resumeBlock && els.article.querySelector('[data-b="' + resumeBlock + '"]');
-      if (rb) scrollToEl(rb, true); else if (resumeY != null) window.scrollTo(0, resumeY); else window.scrollTo(0, 0);
+      if (rb) scrollToEl(rb, true); else if (resumeY != null) readerScrollTo(resumeY); else readerScrollTo(0);
       resumeY = null; resumeBlock = null;
       activeSection = 'top';
       var h1 = els.article.querySelector('h1'); if (h1) h1.focus({ preventScroll: true });
     } else {
-      window.scrollTo(0, 0); activeSection = 'top';
+      readerScrollTo(0); activeSection = 'top';
     }
     expandFor(ch.id);
     updateActive(); markTocActive(); updateBookmarkBtn(); updateProgress();
@@ -256,8 +271,15 @@
 
   function scrollToEl(el, instant) {
     var off = els.topbar.offsetHeight + 12;
-    var y = el.getBoundingClientRect().top + window.pageYOffset - off;
-    window.scrollTo({ top: Math.max(0, y), behavior: (instant || reduceMotion) ? 'auto' : 'smooth' });
+    var y;
+    if (hasReaderScroller()) {
+      // Координаты внутри внутренней области чтения, уже под шапкой.
+      y = el.getBoundingClientRect().top - els.main.getBoundingClientRect().top +
+        els.main.scrollTop - 12;
+    } else {
+      y = el.getBoundingClientRect().top + window.pageYOffset - off;
+    }
+    readerScrollTo(y, (instant || reduceMotion) ? 'auto' : 'smooth');
     if (el.tagName && /^H[1-4]$/.test(el.tagName)) { el.setAttribute('tabindex', '-1'); el.focus({ preventScroll: true }); }
   }
 
@@ -281,6 +303,10 @@
 
   /* ---------- Прогресс и активный раздел ---------- */
   function docProgress() {
+    if (hasReaderScroller()) {
+      var scrollable = Math.max(1, els.main.scrollHeight - els.main.clientHeight);
+      return Math.min(1, Math.max(0, els.main.scrollTop / scrollable));
+    }
     var h = document.documentElement;
     var max = Math.max(1, h.scrollHeight - window.innerHeight);
     return Math.min(1, Math.max(0, window.pageYOffset / max));
@@ -319,7 +345,7 @@
   }
   function savePosition() {
     if (!current || els.reader.hidden) return;
-    STORE.set('position', { chapter: current.ch.id, section: activeSection, y: Math.round(window.pageYOffset), block: firstVisibleBlock() });
+    STORE.set('position', { chapter: current.ch.id, section: activeSection, y: Math.round(readerScrollY()), block: firstVisibleBlock() });
   }
   function saveScroll() { savePosition(); }
 
@@ -610,6 +636,7 @@
     else if (e.key === 'ArrowRight' && current && !els.reader.hidden && e.shiftKey) { go(chapters[current.index + 1]); }
   });
   window.addEventListener('scroll', onScroll, { passive: true });
+  els.main.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', function () {
     if (!isMobile()) { document.body.classList.remove('drawer-open'); els.backdrop.hidden = true; }
     els['btn-menu'].setAttribute('aria-expanded', isMobile() ? (document.body.classList.contains('drawer-open') ? 'true' : 'false') : (document.body.classList.contains('sidebar-hidden') ? 'false' : 'true'));
