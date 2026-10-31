@@ -17,8 +17,18 @@ assert.equal(lore.shortChapters.length,11);
 assert.equal(lore.fullChapters.length,11);
 assert(!lore.shortChapters.some(c=>c.id==='государства-глюфонде-краткие-статьи' ||
  c.id==='история-уморы-краткая-версия'), 'Дополнительные статьи остались самостоятельными главами');
+const markdown=require('../js/markdown.js');
 const countryChapter=lore.shortChapters.find(c=>c.id==='государства-и-международные-отношения');
 const historyChapter=lore.shortChapters.find(c=>c.id==='история-уморы');
+// Все государства в объединённой главе должны попадать в оглавление,
+// а не оставаться безымянными абзацами между соседними странами.
+for (const name of ['Алдон', 'Пенсель', 'Сатенсента']) {
+  assert(countryChapter.md.split('\n').includes('## '+name),
+    'Страна отображается без заголовка: '+name);
+  const parsed = markdown.render(countryChapter.md);
+  assert(parsed.headings.some(h => h.level === 2 && h.text === name),
+    'Страны нет в навигации: '+name);
+}
 assert(countryChapter && countryChapter.md.includes('## Стаб') &&
  countryChapter.md.includes('## Маршензия') && countryChapter.md.includes('Сатенсента'),
  'Краткие статьи государств не включены во вторую главу');
@@ -57,7 +67,7 @@ const special=engine.compile({entries:[
 assert.equal(special.find('муниципального центрона')[0]?.id,'large');
 assert.equal(special.find('псевдоцентрон').length,0);
 assert.equal(engine.compile(null).find('центрон').length,0);
-const markdown=require('../js/markdown.js');
+
 for (const edition of [lore.shortChapters,lore.fullChapters]) {
   const ids=new Set();
   for (const chapter of edition) {
