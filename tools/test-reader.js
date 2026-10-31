@@ -40,6 +40,17 @@ for (const ch of manifest.chapters) {
       'Название Эйдоса повторяется в таблице');
   }
 }
+// Глава V: обычный текст и перечисления не должны выделяться жирным.
+// Жирное начертание остаётся только у заголовков уровней H2/H3.
+const resonanceMd = read('content/06-glava-5.md');
+for (const line of resonanceMd.split('\n')) {
+  if (/^#{1,6} /.test(line) || !line.trim()) continue;
+  assert(!/^(?:- )?\\*\\*.+\\*\\*$/.test(line),
+    'Обычный текст главы «Резонанс и Диссонанс» выделен жирным: ' + line.slice(0, 90));
+}
+const resonanceHtml = md.render(resonanceMd).html;
+assert(!/<p><strong>/.test(resonanceHtml), 'В главе V обнаружен жирный абзац');
+assert(!/<li><strong>/.test(resonanceHtml), 'В главе V обнаружен жирный пункт списка');
 const css = read('css/style.css');
 assert(css.includes('.eidos-mobile__description { text-align: left; }'));
 assert(css.includes('.table--eidos-interactions tbody td:nth-child(5)'));
