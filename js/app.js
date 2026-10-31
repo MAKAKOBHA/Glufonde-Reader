@@ -40,6 +40,7 @@
   var splitPositions = STORE.get('split-positions', {}) || {};
   var readingTrail = [];
   var suppressTrail = false, returnPosition = null, splitScrollSaveTimer = null;
+  var pendingLoreFraction = null;
 
   function announce(msg) { els['sr-status'].textContent = ''; setTimeout(function () { els['sr-status'].textContent = msg; }, 30); }
   function isMobile() { return window.matchMedia('(max-width: 899px)').matches; }
@@ -256,7 +257,15 @@
     var target = null;
     if (secId && secId !== 'top') target = document.getElementById('sec-' + secId);
     if (pendingHL) applyHighlight();
-    if (returnPosition && returnPosition.chapter === ch.id) {
+    if (pendingLoreFraction !== null && ch.book === 'lore') {
+      // Переключение редакции: восстановление после рендера новой длины.
+      var ratio = pendingLoreFraction;
+      pendingLoreFraction = null;
+      if (hasReaderScroller()) readerScrollTo(restoreFraction(els.main, ratio));
+      else readerScrollTo(Math.round(ratio *
+        Math.max(0, document.documentElement.scrollHeight - window.innerHeight)));
+      activeSection = 'top';
+    } else if (returnPosition && returnPosition.chapter === ch.id) {
       // Возврат к точной позиции: значение scrollTop важнее заголовка.
       var yBack = returnPosition.y;
       returnPosition = null;
@@ -376,25 +385,56 @@
     $('btn-split').setAttribute('aria-label', splitMode ? 'Вернуться к одной книге' :
       'Читать RuleBook и лор рядом');
   }
+  // Длина полной и краткой главы различается: пиксельный scrollTop не
+  // переносится напрямую. Сохраняем долю прочитанного в конкретной главе.
+  function scrollFraction(top, height, viewport) {
+    return Math.max(0, Math.min(1, top / Math.max(1, height - viewport)));
+  }
+  function restoreFraction(scroller, fraction) {
+    return Math.round(Math.max(0, Math.min(1, fraction)) *
+      Math.max(0, scroller.scrollHeight - scroller.clientHeight));
+  }
+  function loreReadingFraction() {
+    if (hasReaderScroller()) return scrollFraction(els.main.scrollTop,
+      els.main.scrollHeight, els.main.clientHeight);
+    return scrollFraction(window.pageYOffset, document.documentElement.scrollHeight, window.innerHeight);
+  }
   function changeLoreMode() {
-    var oldY = !splitMode && current && current.ch.book === 'lore' ? readerScrollY() : null;
+    var previousChapter = !splitMode && current && current.ch.book === 'lore' ? current.ch.id : null;
+    var previousFraction = previousChapter ? loreReadingFraction() : 0;
+    var splitChapter = splitMode ? paneState('lore').chapter : null;
+    var splitScroller = splitMode ? $('split-lore-scroll') : null;
+    var splitFraction = splitScroller ? scrollFraction(splitScroller.scrollTop,
+      splitScroller.scrollHeight, splitScroller.clientHeight) : 0;
+
     loreMode = loreMode === 'full' ? 'short' : 'full';
     STORE.set('lore-mode', loreMode);
     var source = window.GF_LORE;
     books.lore = prepBook('lore', loreMode === 'short' ? source.shortChapters : source.fullChapters, 'lore-');
+
     if (splitMode) {
-      saveSplitPositions();
-      // Если глава отсутствует в выбранной версии, paneState выберет первую.
+      // Обновляем только лор, не трогая RuleBook и его прокрутку.
+      var newSplitChapter = chapterById(splitChapter);
+      if (!newSplitChapter || newSplitChapter.book !== 'lore') {
+        splitChapter = books.lore.chapters[0].id;
+        splitFraction = 0;
+      }
+      splitPositions.lore = { chapter: splitChapter, section: 'top', y: 0 };
       renderSplitPane('lore');
+      splitScroller.scrollTop = restoreFraction(splitScroller, splitFraction);
+      splitPositions.lore.y = splitScroller.scrollTop;
+      STORE.set('split-positions', splitPositions);
     } else if (bookId === 'lore') {
-      var chId = current && current.ch.id;
-      var available = chapterById(chId);
-      var targetId = available && available.book === 'lore' ? chId : books.lore.chapters[0].id;
-      useBook('lore');
-      current = null;
-      resumeY = targetId === chId ? oldY : 0;
+      // Один и тот же ID главы существует в обеих редакциях.
+      var available = chapterById(previousChapter);
+      var targetId = available && available.book === 'lore' ?
+        previousChapter : books.lore.chapters[0].id;
+      pendingLoreFraction = targetId === previousChapter ? previousFraction : 0;
+      useBook('lore'); // Перестраивает оглавление и поиск текущей редакции.
+      current = null;  // Принудительно перерисовываем текст даже при прежнем URL.
+      resumeY = null;
       resumeBlock = null;
-      suppressTrail = true;
+      suppressTrail = true; // Переключение редакции не считается переходом читателя.
       var targetHash = hrefTo(targetId);
       if (location.hash === targetHash) route();
       else location.hash = targetHash;
