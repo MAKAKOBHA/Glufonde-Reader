@@ -13,6 +13,10 @@ const glossary=window.GF_GLOSSARY, lore=window.GF_LORE;
 const engine=require('../js/glossary-core.js');
 const matcher=engine.compile(glossary);
 assert.equal(glossary.entries.length,87);
+for (const entry of glossary.entries) {
+  assert(/^\p{Lu}/u.test(entry.definition.trim()),
+    'Определение должно начинаться с заглавной буквы: '+entry.term);
+}
 assert.equal(lore.shortChapters.length,11);
 assert.equal(lore.fullChapters.length,11);
 assert(!lore.shortChapters.some(c=>c.id==='государства-глюфонде-краткие-статьи' ||
