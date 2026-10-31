@@ -784,6 +784,8 @@
     if (splitMode) {
       ['rules', 'lore'].forEach(renderSplitPane);
       updateReadingControls();
+      syncSettingsUI();
+      return;
     }
     useBook(bookId);
     if (oldId && chapterById(oldId)) {
