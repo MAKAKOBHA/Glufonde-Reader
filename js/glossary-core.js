@@ -5,7 +5,7 @@
   else root.GFGlossary=factory();
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
-  var wordRe=/[\\p{L}\\p{M}\\p{N}]+(?:[-‑][\\p{L}\\p{M}\\p{N}]+)*/gu;
+  var wordRe=/[\p{L}\p{M}\p{N}]+(?:[-‑][\p{L}\p{M}\p{N}]+)*/gu;
   function normalize(s){return String(s).normalize('NFC').toLocaleLowerCase('ru').replace(/ё/g,'е');}
   function tokens(s){return Array.from(String(s).matchAll(wordRe),function(m){return {text:m[0],start:m.index,end:m.index+m[0].length,key:normalize(m[0])};});}
   function variants(word){
@@ -85,7 +85,7 @@
       for(var i=0;i<ts.length;){
         var node=rootNode,best=null;
         for(var j=i;j<ts.length;j++){
-          if(j>i && /[^\\s]/u.test(text.slice(ts[j-1].end,ts[j].start)))break;
+          if(j>i && /[^\s]/u.test(text.slice(ts[j-1].end,ts[j].start)))break;
           node=node.children.get(ts[j].key);
           if(!node)break;
           if(node.entry)best={start:ts[i].start,end:ts[j].end,id:node.entry.id,term:node.entry.term,
