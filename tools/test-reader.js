@@ -66,5 +66,25 @@ assert(app.includes('Math.round(readerScrollY())'), 'Не сохраняется
 
 assert(app.includes('gmMode || !c.master'), 'Пропала фильтрация мастерских глав');
 assert(app.includes("STORE.set('gm-mode', gmMode)"), 'Пропало сохранение режима Мастера');
+
+// Новые функции читалки и ограничения для независимых панелей.
+const page = read('index.html');
+for (const id of ['btn-reading-back', 'lore-switch', 'btn-split', 'split-reader',
+  'split-rules-toc', 'split-rules-scroll', 'split-lore-toc', 'split-lore-scroll']) {
+  assert(page.includes('id="' + id + '"'), 'Нет элемента ' + id);
+}
+for (const name of ['function makeShortLore(', 'function readingBack(',
+  'function captureReadingPosition(', 'function readerScrollY(',
+  'function openSplit(', 'function closeSplit(', 'function navigateSplit(',
+  'function renderSplitPane(']) {
+  assert(app.includes(name), 'Нет функции ' + name);
+}
+assert(app.includes("STORE.set('lore-mode', loreMode)"), 'Режим лора не сохраняется');
+assert(app.includes("STORE.set('split-positions', splitPositions)"), 'Позиции двух книг не сохраняются');
+assert(app.includes('returnPosition = frame;'), 'Возврат не запоминает точное место');
+assert(app.includes("['rules', 'lore'].forEach(renderSplitPane)"), 'Нет двух независимых панелей');
+assert(css.includes('.split-pane__scroll {'), 'Нет независимой прокрутки панелей');
+assert(css.includes('.lore-switch__thumb {'), 'Нет визуального тумблера лора');
+assert(css.includes('body.split-active .reader__body > .sidebar'), 'Основное оглавление не скрывается при разделении');
 console.log('✓ Аудит завершён: ' + seen.size + ' глав, ' + stageTables +
   ' таблиц Эйдоса, ' + interactionTables + ' таблицы взаимодействий.');
