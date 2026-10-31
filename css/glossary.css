@@ -6,6 +6,17 @@
   cursor: help; vertical-align: baseline;
   -webkit-tap-highlight-color: transparent;
 }
+/* Глоссарные кнопки внутри заголовков должны наследовать их регистр,
+   даже если браузер задаёт кнопкам text-transform: none. */
+.prose h1 .gf-glossary-term, .prose h2 .gf-glossary-term,
+.prose h3 .gf-glossary-term, .prose h4 .gf-glossary-term,
+.prose h5 .gf-glossary-term, .prose h6 .gf-glossary-term {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: uppercase;
+}
 .gf-glossary-term:hover, .gf-glossary-term:focus-visible {
   color: var(--accent); border-bottom-style: solid;
 }

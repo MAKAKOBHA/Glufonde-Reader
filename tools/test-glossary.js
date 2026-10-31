@@ -84,6 +84,24 @@ for (const edition of [lore.shortChapters,lore.fullChapters]) {
     assert(!/Словарь терминов/i.test(result.title),'Словарь попал в оглавление');
   }
 }
+// Импорт Google Docs иногда ошибочно помечает целые абзацы заголовками.
+const factions=lore.fullChapters.find(c=>c.id==='фракции-и-организации-уморы');
+assert(factions,'Нет полной главы о фракциях');
+for (const paragraphStart of [
+  'Сохраняя основной центр деятельности во Врелее, «Дети Гурты»',
+  'Банда Вельвета также расширяет своё влияние за пределами Врелея'
+]) {
+  assert(factions.md.split('\n').some(line=>line.startsWith(paragraphStart)),
+    'Описание фракции должно быть обычным абзацем: '+paragraphStart);
+  assert(!factions.md.split('\n').some(line=>/^#{1,6} /.test(line)&&line.includes(paragraphStart)),
+    'Описание фракции ошибочно стало заголовком: '+paragraphStart);
+}
+for(const version of [lore.shortChapters,lore.fullChapters]) {
+  for(const ch of version){
+    assert(!ch.md.split('\n').some(line=>/^#{2,6} /.test(line)&&line.length>150&&/[.!?…]$/.test(line)),
+      'Полный абзац ошибочно размечен заголовком: '+ch.id);
+  }
+}
 const all=Object.values(lore).filter(Array.isArray).flat();
 assert(new Set(all.map(x=>x.md)).size>=22,'Отдельные исходные версии');
 assert(all.some(x=>/Глубь/i.test(x.md)),'Нет Глуби');
@@ -112,4 +130,5 @@ assert(ui.includes("lastPointer==='touch'"),'Нет сенсорной пане�
 assert(css.includes('env(safe-area-inset-bottom'),'Нет учёта нижнего края iPhone');
 assert(css.includes('.gf-glossary-tooltip'),'Нет подсказки мышью');
 assert(css.includes('body.split-active .gf-glossary-sheet'),'Нет расположения в разделённом режиме');
+assert(css.includes('text-transform: uppercase;'), 'Глоссарий нарушает регистр заголовков');
 console.log('✓ Глоссарий: 87 определений, склонения, составные термины, границы слов, UI; '+lore.shortChapters.length+'/'+lore.fullChapters.length+' глав.');
