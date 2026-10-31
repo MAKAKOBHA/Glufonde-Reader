@@ -22,7 +22,7 @@ const historyChapter=lore.shortChapters.find(c=>c.id==='история-умор�
 // Все государства в объединённой главе должны попадать в оглавление,
 // а не оставаться безымянными абзацами между соседними странами.
 for (const name of ['Алдон', 'Пенсель', 'Сатенсента']) {
-  assert(countryChapter.md.includes('\\n\\n## '+name+'\\n\\n'),
+  assert(countryChapter.md.split('\\n').includes('## '+name),
     'Страна отображается без заголовка: '+name);
   const parsed = markdown.render(countryChapter.md);
   assert(parsed.headings.some(h => h.level === 2 && h.text === name),
