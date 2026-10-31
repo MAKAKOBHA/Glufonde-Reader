@@ -85,6 +85,16 @@ for (const edition of [lore.shortChapters,lore.fullChapters]) {
   }
 }
 // Импорт Google Docs иногда ошибочно помечает целые абзацы заголовками.
+// Метки революционных лет должны быть обычными строками с жирным шрифтом,
+// без маркировки списком и без изменения уровня заголовка или размера.
+const revolution=lore.fullChapters.find(c=>c.id==='история-уморы');
+assert(revolution,'Нет полной истории Уморы');
+for(const year of ['90 год','91–92 годы','93 год','94 год','95 год','96 год','97 год']){
+  const expected='**'+year+':**';
+  assert(revolution.md.split('\n').includes(expected), 'Год не выделен жирным: '+year);
+  assert(!revolution.md.split('\n').some(line=>line.startsWith('- '+year+':')),
+    'У года остался маркер списка: '+year);
+}
 const factions=lore.fullChapters.find(c=>c.id==='фракции-и-организации-уморы');
 assert(factions,'Нет полной главы о фракциях');
 for (const paragraphStart of [
