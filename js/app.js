@@ -225,6 +225,7 @@
     } else { suppressTrail = false; showHome(); }
   }
   function showHome() {
+    if (window.GFGlossaryUI) window.GFGlossaryUI.dismiss(false);
     var fromReader = !els.reader.hidden;
     saveScroll();
     closeDrawer();
@@ -287,6 +288,7 @@
   function expandFor(chId) { if (!expanded[chId]) setExpanded(chId, true); }
 
   function renderChapter(ch) {
+    if (window.GFGlossaryUI) window.GFGlossaryUI.dismiss(false);
     els.article.innerHTML = ch.html;
     if (ch.book === 'lore' && window.GFGlossaryUI) window.GFGlossaryUI.decorate(els.article);
     var figs = els.article.querySelectorAll('.figure');
@@ -421,6 +423,7 @@
     STORE.set('split-positions', splitPositions);
   }
   function renderSplitPane(book) {
+    if (window.GFGlossaryUI) window.GFGlossaryUI.dismiss(false);
     var state = paneState(book), all = books[book].chapters;
     if (!state.chapter) return;
     var chapter = all.filter(function (ch) { return ch.id === state.chapter; })[0] || all[0];
