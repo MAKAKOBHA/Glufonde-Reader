@@ -13,8 +13,21 @@ const glossary=window.GF_GLOSSARY, lore=window.GF_LORE;
 const engine=require('../js/glossary-core.js');
 const matcher=engine.compile(glossary);
 assert.equal(glossary.entries.length,87);
-assert.equal(lore.shortChapters.length,13);
+assert.equal(lore.shortChapters.length,11);
 assert.equal(lore.fullChapters.length,11);
+assert(!lore.shortChapters.some(c=>c.id==='государства-глюфонде-краткие-статьи' ||
+ c.id==='история-уморы-краткая-версия'), 'Дополнительные статьи остались самостоятельными главами');
+const countryChapter=lore.shortChapters.find(c=>c.id==='государства-и-международные-отношения');
+const historyChapter=lore.shortChapters.find(c=>c.id==='история-уморы');
+assert(countryChapter && countryChapter.md.includes('## Стаб') &&
+ countryChapter.md.includes('## Маршензия') && countryChapter.md.includes('Сатенсента'),
+ 'Краткие статьи государств не включены во вторую главу');
+assert(historyChapter && historyChapter.md.includes('Якуб Грамматикопуло') &&
+ historyChapter.md.includes('Аркадиушем Жебским') &&
+ historyChapter.md.includes('К 700 году Умора представляет собой молодую республику'),
+ 'Расширенная краткая история не включена в третью главу');
+assert(lore.shortChapters.every(c=>(c.md.match(/^# /gm)||[]).length===1),
+ 'В объединённой главе появились лишние заголовки первого уровня');
 assert(lore.fullChapters.every(c=>!c.md.includes('# ГЛАВА. Словарь терминов')));
 assert(lore.shortChapters.every(c=>!c.md.includes('# ГЛАВА. Словарь терминов')));
 for(const entry of glossary.entries){
