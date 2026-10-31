@@ -91,14 +91,14 @@ for (const paragraphStart of [
   'Сохраняя основной центр деятельности во Врелее, «Дети Гурты»',
   'Банда Вельвета также расширяет своё влияние за пределами Врелея'
 ]) {
-  assert(factions.md.split('\\n').some(line=>line.startsWith(paragraphStart)),
+  assert(factions.md.split('\n').some(line=>line.startsWith(paragraphStart)),
     'Описание фракции должно быть обычным абзацем: '+paragraphStart);
-  assert(!factions.md.split('\\n').some(line=>/^#{1,6} /.test(line)&&line.includes(paragraphStart)),
+  assert(!factions.md.split('\n').some(line=>/^#{1,6} /.test(line)&&line.includes(paragraphStart)),
     'Описание фракции ошибочно стало заголовком: '+paragraphStart);
 }
 for(const version of [lore.shortChapters,lore.fullChapters]) {
   for(const ch of version){
-    assert(!ch.md.split('\\n').some(line=>/^#{2,6} /.test(line)&&line.length>150&&/[.!?…]$/.test(line)),
+    assert(!ch.md.split('\n').some(line=>/^#{2,6} /.test(line)&&line.length>150&&/[.!?…]$/.test(line)),
       'Полный абзац ошибочно размечен заголовком: '+ch.id);
   }
 }
