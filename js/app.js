@@ -414,7 +414,7 @@
   }
   /* ---------- Независимое чтение двух книг ---------- */
   function splitAvailable() {
-    return window.matchMedia('(min-width: 1024px)').matches && !!books.lore;
+    return window.matchMedia('(min-width: 1024px) and (orientation: landscape), (min-width: 1440px)').matches && !!books.lore;
   }
   function paneState(book) {
     var list = books[book] && books[book].chapters || [];
@@ -528,6 +528,8 @@
       splitFocused = book;
     });
     $('split-' + book + '-scroll').addEventListener('pointerdown', function () { splitFocused = book; });
+    $('split-' + book + '-scroll').addEventListener('wheel', function () { splitFocused = book; }, { passive: true });
+    $('split-' + book + '-scroll').addEventListener('touchstart', function () { splitFocused = book; }, { passive: true });
     $('split-' + book + '-scroll').addEventListener('focus', function () { splitFocused = book; });
     $('split-' + book + '-scroll').addEventListener('scroll', function () {
       clearTimeout(splitScrollSaveTimer);
