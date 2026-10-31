@@ -19,6 +19,15 @@ assert(!lore.shortChapters.some(c=>c.id==='государства-глюфонд
  c.id==='история-уморы-краткая-версия'), 'Дополнительные статьи остались самостоятельными главами');
 const countryChapter=lore.shortChapters.find(c=>c.id==='государства-и-международные-отношения');
 const historyChapter=lore.shortChapters.find(c=>c.id==='история-уморы');
+// Все государства в объединённой главе должны попадать в оглавление,
+// а не оставаться безымянными абзацами между соседними странами.
+for (const name of ['Алдон', 'Пенсель', 'Сатенсента']) {
+  assert(countryChapter.md.includes('\\n\\n## '+name+'\\n\\n'),
+    'Страна отображается без заголовка: '+name);
+  const parsed = markdown.render(countryChapter.md);
+  assert(parsed.headings.some(h => h.level === 2 && h.text === name),
+    'Страны нет в навигации: '+name);
+}
 assert(countryChapter && countryChapter.md.includes('## Стаб') &&
  countryChapter.md.includes('## Маршензия') && countryChapter.md.includes('Сатенсента'),
  'Краткие статьи государств не включены во вторую главу');
