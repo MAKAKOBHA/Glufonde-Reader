@@ -45,7 +45,7 @@ for (const ch of manifest.chapters) {
 const resonanceMd = read('content/06-glava-5.md');
 for (const line of resonanceMd.split('\n')) {
   if (/^#{1,6} /.test(line) || !line.trim()) continue;
-  assert(!/^(?:- )?\\*\\*.+\\*\\*$/.test(line),
+  assert(!(line.startsWith('**') || line.startsWith('- **')),
     'Обычный текст главы «Резонанс и Диссонанс» выделен жирным: ' + line.slice(0, 90));
 }
 const resonanceHtml = md.render(resonanceMd).html;
