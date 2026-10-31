@@ -35,6 +35,11 @@
   var expanded = {};           // id главы -> развёрнута ли в оглавлении
   var scrollTimer = null, ticking = false;
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var loreMode = STORE.get('lore-mode', 'full') === 'short' ? 'short' : 'full';
+  var splitMode = false, splitFocused = 'rules';
+  var splitPositions = STORE.get('split-positions', {}) || {};
+  var readingTrail = [];
+  var suppressTrail = false, returnPosition = null, splitScrollSaveTimer = null;
 
   function announce(msg) { els['sr-status'].textContent = ''; setTimeout(function () { els['sr-status'].textContent = msg; }, 30); }
   function isMobile() { return window.matchMedia('(max-width: 899px)').matches; }
@@ -66,11 +71,34 @@
       return gmMode ? inner : '';
     });
   }
+  // Временная сокращённая версия существующих статей: первые два смысловых
+  // блока каждого раздела. Позднее редакторские shortMd заменят эти выдержки.
+  // Заголовки и цельные Markdown-блоки сохраняются.
+  function makeShortLore(text) {
+    var chunks = String(text || '').replace(/\r\n?/g, '\n').split(/\n\s*\n/);
+    var count = 0, out = [];
+    chunks.forEach(function (chunk) {
+      var c = chunk.trim();
+      if (!c) return;
+      if (/^#{1,6}\s/m.test(c)) {
+        count = 0;
+        out.push(c);
+      } else if (count < 2) {
+        out.push(c);
+        count++;
+      }
+    });
+    return out.join('\n\n');
+  }
   // Превращает Markdown глав в готовые страницы. prefix нужен, чтобы адреса глав разных разделов не совпадали.
   function prepBook(id, raw, prefix) {
     var meta = bookMeta(id);
     return { id: id, title: meta.title, ambience: meta.ambience, chapters: (raw || []).filter(function (c) { return gmMode || !c.master; }).map(function (c, i) {
-      var r = MD.render(visibleMarkdown(c.md));
+      var text = visibleMarkdown(c.md);
+      if (id === 'lore' && loreMode === 'short') {
+        text = visibleMarkdown(c.shortMd || makeShortLore(c.md));
+      }
+      var r = MD.render(text);
       return { id: prefix + c.id, book: id, index: i, title: r.title || c.id, html: r.html, headings: r.headings, blocks: r.blocks };
     }) };
   }
@@ -198,11 +226,22 @@
   }
   function route() {
     var r = parseHash();
+    if (splitMode) {
+      // Внешняя ссылка или кнопка перехода на главную выходит из двухоконного режима.
+      splitMode = false;
+      document.body.classList.remove('split-active');
+      $('split-reader').hidden = true;
+    }
     if (r.view === 'read') {
       var ch = chapterById(r.ch);
       if (!ch) { location.replace('#/'); return; }
+      if (current && !els.reader.hidden && !suppressTrail &&
+          (current.ch.id !== ch.id || r.sec !== activeSection)) {
+        pushReadingTrail(captureReadingPosition());
+      }
+      suppressTrail = false;
       showReader(ch, r.sec);
-    } else showHome();
+    } else { suppressTrail = false; showHome(); }
   }
   function showHome() {
     var fromReader = !els.reader.hidden;
@@ -210,6 +249,7 @@
     closeDrawer();
     document.body.dataset.view = 'home';
     els.reader.hidden = true; els.home.hidden = false;
+    updateReadingControls();
     if (AMB) AMB.setTrack(null);
     fillHome();
     document.title = CFG.title || 'Glufonde Fracture';
@@ -228,13 +268,20 @@
       renderChapter(ch);
     }
     current = { ch: ch, index: ch.index };
+    updateReadingControls();
     document.title = ch.title + ' — ' + books[bookId].title + ' — ' + (CFG.title || 'Glufonde Fracture');
     els.crumb.textContent = books[bookId].title + ' · ' + ch.title;
     updatePager(); markTocActive();
     var target = null;
     if (secId && secId !== 'top') target = document.getElementById('sec-' + secId);
     if (pendingHL) applyHighlight();
-    if (target) {
+    if (returnPosition && returnPosition.chapter === ch.id) {
+      // Возврат к точной позиции: значение scrollTop важнее заголовка.
+      var yBack = returnPosition.y;
+      returnPosition = null;
+      readerScrollTo(yBack);
+      activeSection = 'top';
+    } else if (target) {
       scrollToEl(target, true);
       activeSection = secId;
     } else if (!sameChapter) {
@@ -301,6 +348,194 @@
   }
   function go(ch) { if (ch) location.hash = hrefTo(ch.id).slice(1); }
 
+  /* ---------- Возврат к месту чтения ---------- */
+  function captureReadingPosition() {
+    if (!current) return null;
+    return { book: current.ch.book, chapter: current.ch.id, section: activeSection,
+      y: Math.max(0, readerScrollY()) };
+  }
+  function pushReadingTrail(frame) {
+    if (!frame || !chapterById(frame.chapter)) return;
+    var previous = readingTrail[readingTrail.length - 1];
+    if (!previous || previous.chapter !== frame.chapter || Math.abs(previous.y - frame.y) > 8) {
+      readingTrail.push(frame);
+      if (readingTrail.length > 40) readingTrail.shift();
+    }
+    updateReadingControls();
+  }
+  function readingBack() {
+    while (readingTrail.length) {
+      var frame = readingTrail.pop();
+      if (!chapterById(frame.chapter)) continue;
+      if (splitMode) {
+        var paneBook = frame.book;
+        navigateSplit(paneBook, frame.chapter, frame.section, false, frame.y);
+      } else {
+        suppressTrail = true;
+        returnPosition = frame;
+        var hash = hrefTo(frame.chapter);
+        if (location.hash === hash) route();
+        else location.hash = hash;
+      }
+      break;
+    }
+    updateReadingControls();
+  }
+  function updateReadingControls() {
+    $('btn-reading-back').disabled = readingTrail.length === 0;
+    $('lore-switch').hidden = document.body.dataset.view !== 'reader' ||
+      (!splitMode && bookId !== 'lore');
+    $('lore-switch').classList.toggle('is-short', loreMode === 'short');
+    $('lore-switch').setAttribute('aria-checked', loreMode === 'short' ? 'true' : 'false');
+    $('lore-switch').setAttribute('aria-label', loreMode === 'short' ?
+      'Сокращённая версия лора, переключить на полную' :
+      'Полная версия лора, переключить на сокращённую');
+    $('btn-split').setAttribute('aria-pressed', splitMode ? 'true' : 'false');
+    $('btn-split').setAttribute('aria-label', splitMode ? 'Вернуться к одной книге' :
+      'Читать RuleBook и лор рядом');
+  }
+  function changeLoreMode() {
+    var oldY = !splitMode && current && current.ch.book === 'lore' ? readerScrollY() : null;
+    loreMode = loreMode === 'full' ? 'short' : 'full';
+    STORE.set('lore-mode', loreMode);
+    books.lore = prepBook('lore', window.GF_LORE.chapters, 'lore-');
+    if (splitMode) {
+      saveSplitPositions();
+      renderSplitPane('lore');
+    } else if (bookId === 'lore') {
+      var chId = current && current.ch.id;
+      useBook('lore');
+      current = null;
+      resumeY = oldY;
+      suppressTrail = true;
+      if (chId && location.hash.indexOf('#/read/' + chId) === 0) route();
+    }
+    updateReadingControls();
+  }
+  /* ---------- Независимое чтение двух книг ---------- */
+  function splitAvailable() {
+    return window.matchMedia('(min-width: 1024px) and (orientation: landscape), (min-width: 1440px)').matches && !!books.lore;
+  }
+  function paneState(book) {
+    var list = books[book] && books[book].chapters || [];
+    var saved = splitPositions[book] || {};
+    var valid = list.some(function (ch) { return ch.id === saved.chapter; });
+    return valid ? saved : { chapter: list[0] && list[0].id, y: 0, section: 'top' };
+  }
+  function saveSplitPositions() {
+    if (!splitMode) return;
+    ['rules', 'lore'].forEach(function (book) {
+      var panel = $('split-' + book + '-scroll');
+      var state = paneState(book);
+      splitPositions[book] = { chapter: state.chapter, section: state.section, y: panel.scrollTop };
+    });
+    STORE.set('split-positions', splitPositions);
+  }
+  function renderSplitPane(book) {
+    var state = paneState(book), all = books[book].chapters;
+    if (!state.chapter) return;
+    var chapter = all.filter(function (ch) { return ch.id === state.chapter; })[0] || all[0];
+    var article = $('split-' + book + '-article');
+    var scroller = $('split-' + book + '-scroll');
+    var nav = $('split-' + book + '-toc');
+    $('split-' + book + '-title').textContent = chapter.title;
+    article.innerHTML = chapter.html;
+    nav.textContent = '';
+    all.forEach(function (ch) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'split-toc__chapter' + (ch.id === chapter.id ? ' is-active' : '');
+      button.textContent = ch.title;
+      button.addEventListener('click', function () { navigateSplit(book, ch.id, 'top', true); });
+      nav.appendChild(button);
+      if (ch.id === chapter.id) ch.headings.filter(function (h) {
+        return h.level >= 2 && h.level <= 3;
+      }).forEach(function (h) {
+        var sub = document.createElement('button');
+        sub.type = 'button'; sub.className = 'split-toc__section';
+        sub.textContent = h.text;
+        sub.addEventListener('click', function () { navigateSplit(book, ch.id, h.id, true); });
+        nav.appendChild(sub);
+      });
+    });
+    scroller.scrollTop = state.y || 0;
+  }
+  function navigateSplit(book, id, section, record, restoreY) {
+    var state = paneState(book), scroller = $('split-' + book + '-scroll');
+    if (record !== false) pushReadingTrail({ book: book, chapter: state.chapter,
+      section: state.section || 'top', y: scroller.scrollTop });
+    splitFocused = book;
+    if (state.chapter !== id) {
+      splitPositions[book] = { chapter: id, section: section || 'top', y: 0 };
+      renderSplitPane(book);
+    }
+    var article = $('split-' + book + '-article');
+    var target = section && section !== 'top' ?
+      article.querySelector('[id="sec-' + section + '"]') : null;
+    var newY = restoreY == null ?
+      (target ? target.getBoundingClientRect().top - scroller.getBoundingClientRect().top +
+        scroller.scrollTop - 12 : 0) : restoreY;
+    scroller.scrollTop = Math.max(0, newY);
+    splitPositions[book] = { chapter: id, section: section || 'top', y: scroller.scrollTop };
+    STORE.set('split-positions', splitPositions);
+    $('split-' + book + '-toc').hidden = true;
+    $('split-' + book + '-toc-button').setAttribute('aria-expanded', 'false');
+  }
+  function openSplit() {
+    if (!splitAvailable()) return;
+    if (current && !els.reader.hidden) {
+      splitFocused = current.ch.book;
+      splitPositions[splitFocused] = { chapter: current.ch.id, y: readerScrollY(), section: activeSection };
+      savePosition();
+    }
+    splitMode = true;
+    document.body.classList.add('split-active');
+    $('split-reader').hidden = false;
+    ['rules', 'lore'].forEach(renderSplitPane);
+    updateReadingControls();
+    STORE.set('split-positions', splitPositions);
+  }
+  function closeSplit() {
+    if (!splitMode) return;
+    saveSplitPositions();
+    splitMode = false;
+    document.body.classList.remove('split-active');
+    $('split-reader').hidden = true;
+    var frame = paneState(splitFocused);
+    suppressTrail = true;
+    resumeY = frame.y;
+    resumeBlock = null;
+    current = null;
+    useBook(splitFocused);
+    var hash = hrefTo(frame.chapter);
+    if (location.hash === hash) route(); else location.hash = hash;
+    updateReadingControls();
+  }
+  function toggleSplit() {
+    if (splitMode) closeSplit();
+    else openSplit();
+  }
+  $('btn-reading-back').addEventListener('click', readingBack);
+  $('lore-switch').addEventListener('click', changeLoreMode);
+  $('btn-split').addEventListener('click', toggleSplit);
+  ['rules', 'lore'].forEach(function (book) {
+    var button = $('split-' + book + '-toc-button');
+    var toc = $('split-' + book + '-toc');
+    button.addEventListener('click', function () {
+      var opened = toc.hidden;
+      toc.hidden = !opened;
+      button.setAttribute('aria-expanded', opened ? 'true' : 'false');
+      splitFocused = book;
+    });
+    $('split-' + book + '-scroll').addEventListener('pointerdown', function () { splitFocused = book; });
+    $('split-' + book + '-scroll').addEventListener('wheel', function () { splitFocused = book; }, { passive: true });
+    $('split-' + book + '-scroll').addEventListener('touchstart', function () { splitFocused = book; }, { passive: true });
+    $('split-' + book + '-scroll').addEventListener('focus', function () { splitFocused = book; });
+    $('split-' + book + '-scroll').addEventListener('scroll', function () {
+      clearTimeout(splitScrollSaveTimer);
+      splitScrollSaveTimer = setTimeout(saveSplitPositions, 300);
+    }, { passive: true });
+  });
   /* ---------- Прогресс и активный раздел ---------- */
   function docProgress() {
     if (hasReaderScroller()) {
@@ -548,6 +783,12 @@
     STORE.set('gm-mode', gmMode);
     var oldId = current && current.ch.id;
     prepare();
+    if (splitMode) {
+      ['rules', 'lore'].forEach(renderSplitPane);
+      updateReadingControls();
+      syncSettingsUI();
+      return;
+    }
     useBook(bookId);
     if (oldId && chapterById(oldId)) {
       current = null;
@@ -638,6 +879,7 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   els.main.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', function () {
+    if (splitMode && !splitAvailable()) closeSplit();
     if (!isMobile()) { document.body.classList.remove('drawer-open'); els.backdrop.hidden = true; }
     els['btn-menu'].setAttribute('aria-expanded', isMobile() ? (document.body.classList.contains('drawer-open') ? 'true' : 'false') : (document.body.classList.contains('sidebar-hidden') ? 'false' : 'true'));
     updateProgress();

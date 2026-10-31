@@ -628,3 +628,72 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 #btn-ambience.is-on { color: var(--accent); background: var(--accent-soft); }
 .home__actions .btn[hidden] { display: none; }
 #out-volume { min-width: 3.2em; text-align: right; }
+
+
+/* Верхнее управление книгами: плоский золотой переключатель и две колонки. */
+.topbar__tools .lore-switch {
+  position: relative; display: inline-flex; align-items: center;
+  flex: none; width: 164px; height: 34px; margin: 0 6px;
+  padding: 2px; border: 1px solid var(--accent); border-radius: 2px;
+  color: var(--ink); background: var(--surface); cursor: pointer;
+  font: 700 .72rem/1 var(--font-ui);
+}
+.lore-switch__side { flex: 1; position: relative; z-index: 1; text-align: center; }
+.lore-switch__thumb { position: absolute; z-index: 0; top: 2px; bottom: 2px;
+  right: 2px; width: calc(50% - 2px); background: var(--accent-soft);
+  border: 1px solid var(--accent); transition: transform .16s ease; }
+.lore-switch.is-short .lore-switch__thumb { transform: translateX(calc(-100% - 1px)); }
+#btn-reading-back:disabled { opacity: .3; cursor: default; }
+#btn-split[aria-pressed="true"] { background: var(--accent-soft); }
+@media (max-width: 519px) {
+  /* Место для кнопки «Назад» и переключателя лора на узких телефонах. */
+  body[data-view="reader"] .topbar__brand { display: none; }
+  .topbar .icon-btn { width: 38px; height: 42px; }
+  .topbar__tools .lore-switch { width: 105px; margin: 0 2px; font-size: .59rem; }
+}
+@media (max-width: 1023px), (orientation: portrait) and (max-width: 1439px) {
+  #btn-split { display: none !important; }
+}
+.split-reader { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  position: fixed; top: var(--topbar-h); bottom: 0; left: 0; right: 0;
+  z-index: 10; background: var(--bg); }
+.split-pane { min-width: 0; min-height: 0; display: flex; flex-direction: column;
+  border-right: 1px solid var(--line); }
+.split-pane:last-child { border-right: 0; }
+.split-pane__toolbar { height: 52px; flex: none; display: flex; align-items: center;
+  gap: 8px; padding: 5px 12px; border-bottom: 1px solid var(--rule); background: var(--surface); }
+.split-pane__toolbar strong { white-space: nowrap; font-size: .93rem; }
+.split-pane__chapter { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; font-size: .76rem; color: var(--ink-soft); }
+.split-pane__toc-button { flex: none; background: transparent; color: var(--accent);
+  padding: 7px 9px; border: 1px solid var(--rule); cursor: pointer; font: 700 .78rem var(--font-ui); }
+.split-pane__toc-button[aria-expanded="true"] { background: var(--accent-soft); }
+.split-pane__body { position: relative; min-height: 0; flex: 1; }
+.split-pane__scroll { height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: 24px clamp(12px, 2vw, 32px) 64px; -webkit-overflow-scrolling: touch; }
+.split-pane__scroll .prose { max-width: none; font-size: calc(1.05rem * var(--fs-scale)); }
+.split-pane__scroll .prose h1 { font-size: clamp(1.5rem, 2.3vw, 2rem); }
+.split-pane__toc { position: absolute; z-index: 12; top: 0; bottom: 0; right: 0;
+  width: min(360px, 88%); overflow-y: auto; background: var(--surface);
+  border-left: 1px solid var(--line); box-shadow: var(--shadow); padding: 10px 6px 30px; }
+.split-toc__chapter, .split-toc__section { display: block; width: 100%; padding: 9px 10px;
+  border: 0; text-align: left; background: transparent; color: var(--ink);
+  font: 700 .88rem/1.35 var(--font-ui); cursor: pointer; overflow-wrap: anywhere; }
+.split-toc__section { padding-left: 22px; font-weight: 400; font-size: .83rem; }
+.split-toc__chapter:hover, .split-toc__section:hover, .split-toc__chapter.is-active {
+  background: var(--accent-soft); }
+body.split-active .reader__body > .sidebar,
+body.split-active .reader__body > .content,
+body.split-active .reader__body > .backdrop { display: none !important; }
+body.split-active #btn-prev, body.split-active #btn-next,
+body.split-active #btn-menu, body.split-active #btn-search,
+body.split-active #btn-bookmark { display: none !important; }
+body.split-active { overflow: hidden; }
+@media (max-width: 1023px), (orientation: portrait) and (max-width: 1439px) {
+  .split-reader { display: none !important; }
+}
+@media (max-width: 380px) {
+  .topbar .icon-btn { width: 33px; }
+  .topbar__tools .lore-switch { width: 94px; font-size: .54rem; }
+}
+@media (prefers-reduced-motion: reduce) { .lore-switch__thumb { transition: none; } }

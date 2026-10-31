@@ -73,6 +73,15 @@
       </a>
       <div class="topbar__crumb" id="crumb" aria-live="off"></div>
       <div class="topbar__tools">
+        <button class="icon-btn" type="button" id="btn-reading-back" aria-label="Вернуться к предыдущему месту чтения" title="Назад к месту чтения" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5L5 12l7 7M5 12h14"/></svg>
+        </button>
+        <button class="lore-switch" id="lore-switch" type="button" role="switch" aria-label="Сокращённая версия лора" aria-checked="false" title="Переключить сокращённый и полный лор" hidden>
+          <span class="lore-switch__side">Кратко</span><span class="lore-switch__side">Полностью</span><span class="lore-switch__thumb" aria-hidden="true"></span>
+        </button>
+        <button class="icon-btn" type="button" id="btn-split" aria-label="Читать RuleBook и лор рядом" aria-pressed="false" title="Разделить экран">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M12 4v16"/></svg>
+        </button>
         <button class="icon-btn" type="button" id="btn-prev" aria-label="Предыдущий раздел">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
         </button>
@@ -149,6 +158,22 @@
         </footer>
       </main>
 
+      <section id="split-reader" class="split-reader" aria-label="Параллельное чтение RuleBook и лора Глюфонде" hidden>
+        <section class="split-pane" id="split-rules" aria-label="Книга правил">
+          <div class="split-pane__toolbar"><strong>RuleBook</strong><span class="split-pane__chapter" id="split-rules-title"></span><button type="button" class="split-pane__toc-button" id="split-rules-toc-button" aria-expanded="false" aria-controls="split-rules-toc">Оглавление</button></div>
+          <div class="split-pane__body">
+            <nav id="split-rules-toc" class="split-pane__toc" aria-label="Оглавление RuleBook" hidden></nav>
+            <div class="split-pane__scroll" id="split-rules-scroll" tabindex="0" aria-label="Текст RuleBook"><article class="prose" id="split-rules-article"></article></div>
+          </div>
+        </section>
+        <section class="split-pane" id="split-lore" aria-label="Лор Глюфонде">
+          <div class="split-pane__toolbar"><strong>История Глюфонде</strong><span class="split-pane__chapter" id="split-lore-title"></span><button type="button" class="split-pane__toc-button" id="split-lore-toc-button" aria-expanded="false" aria-controls="split-lore-toc">Оглавление</button></div>
+          <div class="split-pane__body">
+            <nav id="split-lore-toc" class="split-pane__toc" aria-label="Оглавление лора" hidden></nav>
+            <div class="split-pane__scroll" id="split-lore-scroll" tabindex="0" aria-label="Текст лора"><article class="prose" id="split-lore-article"></article></div>
+          </div>
+        </section>
+      </section>
     </div>
   </div>
 
