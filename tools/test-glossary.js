@@ -69,8 +69,8 @@ assert(app.includes('pendingLoreFraction = targetId === previousChapter ? previo
   'Не сохранено относительное место при смене редакции');
 assert(app.includes('restoreFraction(splitScroller, splitFraction)'),
   'Не сохранена относительная позиция в двухоконном режиме');
-assert(app.includes("if (location.hash === targetHash) route();"),
-  'Не перерисовывается глава при неизменном URL');
+assert(app.includes("showReader(nextChapter, 'top');"),
+  'Переключение редакций должно немедленно перерисовывать главу');
 assert(app.includes("useBook('lore'); // Перестраивает оглавление"),
   'Не обновляется оглавление выбранной редакции');
 assert(app.includes('function readingBack('),'Потеряна история чтения');

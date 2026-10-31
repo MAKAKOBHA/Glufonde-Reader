@@ -430,14 +430,17 @@
       var targetId = available && available.book === 'lore' ?
         previousChapter : books.lore.chapters[0].id;
       pendingLoreFraction = targetId === previousChapter ? previousFraction : 0;
-      useBook('lore'); // Перестраивает оглавление и поиск текущей редакции.
-      current = null;  // Принудительно перерисовываем текст даже при прежнем URL.
+      useBook('lore'); // Перестраивает оглавление и поиск выбранной версии.
+      current = null; // Не позволяем старой редакции остаться в DOM.
       resumeY = null;
       resumeBlock = null;
-      suppressTrail = true; // Переключение редакции не считается переходом читателя.
-      var targetHash = hrefTo(targetId);
-      if (location.hash === targetHash) route();
-      else location.hash = targetHash;
+      suppressTrail = false;
+      // Не ждём hashchange: Safari может отложить его, а адрес главы
+      // зачастую не меняется вовсе. Обновляем видимый текст синхронно.
+      var nextChapter = chapterById(targetId);
+      var nextHash = hrefTo(targetId);
+      if (location.hash !== nextHash) history.replaceState(history.state, '', nextHash);
+      showReader(nextChapter, 'top');
     }
     updateReadingControls();
   }
