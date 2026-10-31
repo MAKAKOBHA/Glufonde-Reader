@@ -55,14 +55,22 @@ const listen=()=>new Promise(ok=>server.listen(0,'127.0.0.1',ok));
       return scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
     });
     await page.locator('#lore-switch').click();
-    const changedFraction=await page.evaluate(()=>{
+    const afterScroll=await page.evaluate(()=>{
       const e=document.querySelector('#main');
-      if(getComputedStyle(e).overflowY==='auto')
-        return e.scrollTop/Math.max(1,e.scrollHeight-e.clientHeight);
-      return scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
+      if(getComputedStyle(e).overflowY==='auto') {
+        const max=Math.max(0,e.scrollHeight-e.clientHeight);
+        return {fraction:e.scrollTop/Math.max(1,max),scrollable:max};
+      }
+      const max=Math.max(0,document.documentElement.scrollHeight-innerHeight);
+      return {fraction:scrollY/Math.max(1,max),scrollable:max};
     });
-    assert(Math.abs(changedFraction-fraction)<.14,
-      'Не сохранено относительное положение при сокращении: '+fraction+' -> '+changedFraction);
+    if(afterScroll.scrollable>0) {
+      assert(Math.abs(afterScroll.fraction-fraction)<.14,
+        'Не сохранено относительное положение при сокращении: '+fraction+' -> '+afterScroll.fraction);
+    }else{
+      // Краткая глава может целиком помещаться в окно: прокрутки больше нет.
+      assert.equal(afterScroll.fraction,0);
+    }
     assert(/история уморы/i.test(await page.locator('#article h1').innerText()));
     // Две книги показываются одновременно; замена лора не меняет текст RuleBook.
     await page.locator('#btn-split').click();
