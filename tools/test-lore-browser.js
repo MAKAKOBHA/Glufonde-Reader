@@ -31,6 +31,8 @@ const listen=()=>new Promise(ok=>server.listen(0,'127.0.0.1',ok));
     await page.waitForSelector('#article h1');
     const before=await page.locator('#article').innerText();
     const mainChapter=await page.locator('#article h1').innerText();
+    console.log('DEBUG initial chapter:',JSON.stringify(mainChapter),'URL:',page.url(),
+      'first 150:',JSON.stringify(before.slice(0,150)),'page errors:',errors);
     assert(mainChapter.includes('Календарь и летоисчисление'));
     assert.equal(await page.locator('#lore-switch').isVisible(),true);
     await page.locator('#lore-switch').click();
