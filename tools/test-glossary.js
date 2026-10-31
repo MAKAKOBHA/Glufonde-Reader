@@ -44,6 +44,19 @@ const special=engine.compile({entries:[
 assert.equal(special.find('муниципального центрона')[0]?.id,'large');
 assert.equal(special.find('псевдоцентрон').length,0);
 assert.equal(engine.compile(null).find('центрон').length,0);
+const markdown=require('../js/markdown.js');
+for (const edition of [lore.shortChapters,lore.fullChapters]) {
+  const ids=new Set();
+  for (const chapter of edition) {
+    assert(!ids.has(chapter.id),'Повтор ID главы: '+chapter.id);
+    ids.add(chapter.id);
+    const result=markdown.render(chapter.md);
+    assert(result.title,'Нет заголовка: '+chapter.id);
+    assert.deepEqual(result.warnings,[],'Ошибка Markdown: '+chapter.id);
+    assert(result.html.includes('<h1'),'Нет шапки главы: '+chapter.id);
+    assert(!/Словарь терминов/i.test(result.title),'Словарь попал в оглавление');
+  }
+}
 const all=Object.values(lore).filter(Array.isArray).flat();
 assert(new Set(all.map(x=>x.md)).size>=24,'Отдельные исходные версии');
 assert(all.some(x=>/Глубь/i.test(x.md)),'Нет Глуби');
