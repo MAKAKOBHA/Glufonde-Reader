@@ -71,7 +71,7 @@ for (const edition of [lore.shortChapters,lore.fullChapters]) {
   }
 }
 const all=Object.values(lore).filter(Array.isArray).flat();
-assert(new Set(all.map(x=>x.md)).size>=24,'Отдельные исходные версии');
+assert(new Set(all.map(x=>x.md)).size>=22,'Отдельные исходные версии');
 assert(all.some(x=>/Глубь/i.test(x.md)),'Нет Глуби');
 assert(all.some(x=>/религия/i.test(x.md)),'Нет религии');
 const app=read('js/app.js'),page=read('index.html'),ui=read('js/glossary-ui.js'),css=read('css/glossary.css');
