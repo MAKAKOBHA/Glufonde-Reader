@@ -65,7 +65,14 @@ const app=read('js/app.js'),page=read('index.html'),ui=read('js/glossary-ui.js')
 assert(app.includes("loreMode === 'short' ? lore.shortChapters : lore.fullChapters"),'Смешаны режимы');
 assert(app.includes("GFGlossaryUI.decorate(els.article)"),'Нет обычного чтения');
 assert(app.includes("GFGlossaryUI.decorate(article)"),'Нет разделённого чтения');
-assert(app.includes('resumeY = targetId === chId ? oldY : 0'),'Не сохранено место');
+assert(app.includes('pendingLoreFraction = targetId === previousChapter ? previousFraction : 0'),
+  'Не сохранено относительное место при смене редакции');
+assert(app.includes('restoreFraction(splitScroller, splitFraction)'),
+  'Не сохранена относительная позиция в двухоконном режиме');
+assert(app.includes("if (location.hash === targetHash) route();"),
+  'Не перерисовывается глава при неизменном URL');
+assert(app.includes("useBook('lore'); // Перестраивает оглавление"),
+  'Не обновляется оглавление выбранной редакции');
 assert(app.includes('function readingBack('),'Потеряна история чтения');
 assert(app.includes('function openSplit('),'Потерян разделённый экран');
 assert(!app.includes('makeShortLore('),'Автоматическое сокращение должно быть отключено');
