@@ -39,6 +39,58 @@
     }
     return Array.from(out);
   }
+  // 10 согласованных падежно-числовых слотов:
+  // И/Р/Д/В/Т/П ед. и И/Р/Д/Т мн.
+  function isAdjective(w){return /(ый|ий|ой|ая|яя|ое|ее|ые|ие)$/.test(normalize(w));}
+  function paradigm(word){
+    var w=normalize(word),stem;
+    if(/(ый|ой|ий)$/.test(w)){
+      stem=w.slice(0,-2);var soft=w.endsWith('ий');
+      return [w,stem+(soft?'его':'ого'),stem+(soft?'ему':'ому'),w,
+        stem+(soft?'им':'ым'),stem+(soft?'ем':'ом'),stem+(soft?'ие':'ые'),
+        stem+'их',stem+(soft?'им':'ым'),stem+(soft?'ими':'ыми')];
+    }
+    if(/(ая|яя)$/.test(w)){
+      stem=w.slice(0,-2);var soft=w.endsWith('яя');
+      return [w,stem+(soft?'ей':'ой'),stem+(soft?'ей':'ой'),stem+(soft?'юю':'ую'),
+        stem+(soft?'ей':'ой'),stem+(soft?'ей':'ой'),stem+(soft?'ие':'ые'),
+        stem+'их',stem+(soft?'им':'ым'),stem+(soft?'ими':'ыми')];
+    }
+    if(/(ое|ее)$/.test(w)){
+      stem=w.slice(0,-2);var soft=w.endsWith('ее');
+      return [w,stem+(soft?'его':'ого'),stem+(soft?'ему':'ому'),w,
+        stem+(soft?'им':'ым'),stem+(soft?'ем':'ом'),stem+(soft?'ие':'ые'),
+        stem+'их',stem+(soft?'им':'ым'),stem+(soft?'ими':'ыми')];
+    }
+    if(/ия$/.test(w)){
+      stem=w.slice(0,-2);return [w,stem+'ии',stem+'ии',stem+'ию',stem+'ией',stem+'ии',
+        stem+'ии',stem+'ий',stem+'иям',stem+'иями'];
+    }
+    if(/а$/.test(w)){
+      stem=w.slice(0,-1);return [w,stem+'ы',stem+'е',stem+'у',stem+'ой',stem+'е',
+        stem+'ы',stem,stem+'ам',stem+'ами'];
+    }
+    if(/я$/.test(w)){
+      stem=w.slice(0,-1);return [w,stem+'и',stem+'е',stem+'ю',stem+'ей',stem+'е',
+        stem+'и',stem+'ь',stem+'ям',stem+'ями'];
+    }
+    if(/ь$/.test(w)){
+      stem=w.slice(0,-1);return [w,stem+'и',stem+'и',w,stem+'ью',stem+'и',
+        stem+'и',stem+'ей',stem+'ям',stem+'ями'];
+    }
+    if(/о$/.test(w)){
+      stem=w.slice(0,-1);return [w,stem+'а',stem+'у',w,stem+'ом',stem+'е',
+        stem+'а',stem,stem+'ам',stem+'ами'];
+    }
+    if(/е$/.test(w)){
+      stem=w.slice(0,-1);return [w,stem+'я',stem+'ю',w,stem+'ем',stem+'е',
+        stem+'я',stem+'й',stem+'ям',stem+'ями'];
+    }
+    if(/[бвгджзклмнпрстфхцчшщ]$/.test(w)){
+      return [w,w+'а',w+'у',w,w+'ом',w+'е',w+'ы',w+'ов',w+'ам',w+'ами'];
+    }
+    return null;
+  }
   function compile(source){
     var entries=Array.isArray(source)?source:(source&&source.entries)||[];
     var rootNode={children:new Map(),entry:null}, indexed=0;
@@ -68,16 +120,26 @@
       if(!base.length)return;
       if(base.length===1){
         variants(base[0]).forEach(function(w){install([w]);});
-      }else if(base.length<=4){
-        var candidate=base.map(variants);
-        function combinations(i,acc){
-          if(i===candidate.length){install(acc);return;}
-          candidate[i].forEach(function(v){combinations(i+1,acc.concat(v));});
+      }else if(base.length<=5){
+        // Сочетания склоняем согласованно. Произвольное декартово произведение
+        // создаёт ложные "муниципальными центронов", поэтому запрещено.
+        var adjectiveCount=0;
+        while(adjectiveCount<base.length-1 && isAdjective(base[adjectiveCount]))adjectiveCount++;
+        if(adjectiveCount){
+          var nounIndex=adjectiveCount;
+          var forms=base.slice(0,nounIndex+1).map(paradigm);
+          if(forms.every(Boolean)){
+            for(var caseIndex=0;caseIndex<10;caseIndex++){
+              var phrase=base.slice();
+              for(var k=0;k<=nounIndex;k++)phrase[k]=forms[k][caseIndex];
+              install(phrase);
+            }
+          }
+        } else {
+          // "Курс валюты", "Дети Гурты": склоняется головное слово,
+          // а зависимое имя остаётся в исходном падеже.
+          variants(base[0]).forEach(function(w){install([w].concat(base.slice(1)));});
         }
-        // Ограничиваем потенциальный рост сочетаний; для больших фраз используем
-        // явные формы и неизменяемый канон.
-        var cost=candidate.reduce(function(x,y){return x*y.length;},1);
-        if(cost<=900)combinations(0,[]);
       }
     });
     function find(text){
