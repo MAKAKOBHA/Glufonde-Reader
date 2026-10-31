@@ -25,15 +25,19 @@ jobs:
         run: node tools/check-assets.js
       - name: Check reader architecture and table markup
         run: node tools/test-reader.js
+      - name: Build shared glossary from JSON
+        run: node tools/build-glossary.js
+      - name: Test LoreBook glossary and editions
+        run: node tools/test-glossary.js
       - name: Build RuleBook automatically
         run: node tools/build.js
       - name: Commit generated book on main
         if: github.event_name == 'push'
         run: |
-          if ! git diff --quiet -- js/book-data.js; then
+          if ! git diff --quiet -- js/book-data.js js/glossary-data.js; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add js/book-data.js
+            git add js/book-data.js js/glossary-data.js
             git commit -m "chore: rebuild RuleBook from Markdown [skip ci]"
             git push
           fi

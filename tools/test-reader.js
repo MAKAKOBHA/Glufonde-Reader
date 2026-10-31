@@ -73,7 +73,7 @@ for (const id of ['btn-reading-back', 'lore-switch', 'btn-split', 'split-reader'
   'split-rules-toc', 'split-rules-scroll', 'split-lore-toc', 'split-lore-scroll']) {
   assert(page.includes('id="' + id + '"'), 'Нет элемента ' + id);
 }
-for (const name of ['function makeShortLore(', 'function readingBack(',
+for (const name of ['function readingBack(',
   'function captureReadingPosition(', 'function readerScrollY(',
   'function openSplit(', 'function closeSplit(', 'function navigateSplit(',
   'function renderSplitPane(']) {

@@ -71,34 +71,11 @@
       return gmMode ? inner : '';
     });
   }
-  // Временная сокращённая версия существующих статей: первые два смысловых
-  // блока каждого раздела. Позднее редакторские shortMd заменят эти выдержки.
-  // Заголовки и цельные Markdown-блоки сохраняются.
-  function makeShortLore(text) {
-    var chunks = String(text || '').replace(/\r\n?/g, '\n').split(/\n\s*\n/);
-    var count = 0, out = [];
-    chunks.forEach(function (chunk) {
-      var c = chunk.trim();
-      if (!c) return;
-      if (/^#{1,6}\s/m.test(c)) {
-        count = 0;
-        out.push(c);
-      } else if (count < 2) {
-        out.push(c);
-        count++;
-      }
-    });
-    return out.join('\n\n');
-  }
   // Превращает Markdown глав в готовые страницы. prefix нужен, чтобы адреса глав разных разделов не совпадали.
   function prepBook(id, raw, prefix) {
     var meta = bookMeta(id);
     return { id: id, title: meta.title, ambience: meta.ambience, chapters: (raw || []).filter(function (c) { return gmMode || !c.master; }).map(function (c, i) {
-      var text = visibleMarkdown(c.md);
-      if (id === 'lore' && loreMode === 'short') {
-        text = visibleMarkdown(c.shortMd || makeShortLore(c.md));
-      }
-      var r = MD.render(text);
+      var r = MD.render(visibleMarkdown(c.md));
       return { id: prefix + c.id, book: id, index: i, title: r.title || c.id, html: r.html, headings: r.headings, blocks: r.blocks };
     }) };
   }
@@ -106,7 +83,11 @@
     if (!BOOK || !BOOK.chapters) return false;
     books.rules = prepBook('rules', BOOK.chapters, '');
     var lore = window.GF_LORE;
-    if (lore && lore.chapters && lore.chapters.length) books.lore = prepBook('lore', lore.chapters, 'lore-');
+    if (lore && lore.fullChapters && lore.shortChapters) {
+      books.lore = prepBook('lore', loreMode === 'short' ? lore.shortChapters : lore.fullChapters, 'lore-');
+    } else if (lore && lore.chapters && lore.chapters.length) {
+      books.lore = prepBook('lore', lore.chapters, 'lore-');
+    }
     chapters = books.rules.chapters;
     return chapters.length > 0;
   }
@@ -307,6 +288,7 @@
 
   function renderChapter(ch) {
     els.article.innerHTML = ch.html;
+    if (ch.book === 'lore' && window.GFGlossaryUI) window.GFGlossaryUI.decorate(els.article);
     var figs = els.article.querySelectorAll('.figure');
     Array.prototype.forEach.call(figs, function (f) {
       var img = f.querySelector('img'), miss = f.querySelector('.figure__missing');
@@ -398,17 +380,24 @@
     var oldY = !splitMode && current && current.ch.book === 'lore' ? readerScrollY() : null;
     loreMode = loreMode === 'full' ? 'short' : 'full';
     STORE.set('lore-mode', loreMode);
-    books.lore = prepBook('lore', window.GF_LORE.chapters, 'lore-');
+    var source = window.GF_LORE;
+    books.lore = prepBook('lore', loreMode === 'short' ? source.shortChapters : source.fullChapters, 'lore-');
     if (splitMode) {
       saveSplitPositions();
+      // Если глава отсутствует в выбранной версии, paneState выберет первую.
       renderSplitPane('lore');
     } else if (bookId === 'lore') {
       var chId = current && current.ch.id;
+      var available = chapterById(chId);
+      var targetId = available && available.book === 'lore' ? chId : books.lore.chapters[0].id;
       useBook('lore');
       current = null;
-      resumeY = oldY;
+      resumeY = targetId === chId ? oldY : 0;
+      resumeBlock = null;
       suppressTrail = true;
-      if (chId && location.hash.indexOf('#/read/' + chId) === 0) route();
+      var targetHash = hrefTo(targetId);
+      if (location.hash === targetHash) route();
+      else location.hash = targetHash;
     }
     updateReadingControls();
   }
@@ -440,6 +429,7 @@
     var nav = $('split-' + book + '-toc');
     $('split-' + book + '-title').textContent = chapter.title;
     article.innerHTML = chapter.html;
+    if (book === 'lore' && window.GFGlossaryUI) window.GFGlossaryUI.decorate(article);
     nav.textContent = '';
     all.forEach(function (ch) {
       var button = document.createElement('button');
