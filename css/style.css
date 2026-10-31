@@ -646,7 +646,10 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 #btn-reading-back:disabled { opacity: .3; cursor: default; }
 #btn-split[aria-pressed="true"] { background: var(--accent-soft); }
 @media (max-width: 519px) {
-  .topbar__tools .lore-switch { width: 123px; margin: 0 2px; font-size: .61rem; }
+  /* Место для кнопки «Назад» и переключателя лора на узких телефонах. */
+  body[data-view="reader"] .topbar__brand { display: none; }
+  .topbar .icon-btn { width: 38px; height: 42px; }
+  .topbar__tools .lore-switch { width: 105px; margin: 0 2px; font-size: .59rem; }
 }
 @media (max-width: 1023px) { #btn-split { display: none !important; } }
 .split-reader { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
