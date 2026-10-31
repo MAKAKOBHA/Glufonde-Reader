@@ -25,6 +25,8 @@ jobs:
         run: node tools/check-assets.js
       - name: Check reader architecture and table markup
         run: node tools/test-reader.js
+      - name: Test LoreBook glossary and editions
+        run: node tools/test-glossary.js
       - name: Build RuleBook automatically
         run: node tools/build.js
       - name: Commit generated book on main
