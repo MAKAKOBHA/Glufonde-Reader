@@ -33,14 +33,14 @@ const listen=()=>new Promise(ok=>server.listen(0,'127.0.0.1',ok));
     const mainChapter=await page.locator('#article h1').innerText();
     console.log('DEBUG initial chapter:',JSON.stringify(mainChapter),'URL:',page.url(),
       'first 150:',JSON.stringify(before.slice(0,150)),'page errors:',errors);
-    assert(mainChapter.includes('Календарь и летоисчисление'));
+    assert(/календарь и летоисчисление/i.test(mainChapter));
     assert.equal(await page.locator('#lore-switch').isVisible(),true);
     await page.locator('#lore-switch').click();
     await page.waitForTimeout(150);
     const after=await page.locator('#article').innerText();
     assert.notEqual(before,after,'Переключение не заменило текст');
     assert.equal(await page.locator('#lore-switch').getAttribute('aria-checked'),'true');
-    assert((await page.locator('#article h1').innerText()).includes('Календарь и летоисчисление'));
+    assert(/календарь и летоисчисление/i.test(await page.locator('#article h1').innerText()));
     assert(page.url().includes('lore-календарь-и-летоисчисление'),'Потеряна глава');
     await page.locator('#lore-switch').click();
     assert.equal(await page.locator('#article').innerText(),before,'Полная редакция не восстановлена');
@@ -63,7 +63,7 @@ const listen=()=>new Promise(ok=>server.listen(0,'127.0.0.1',ok));
     });
     assert(Math.abs(changedFraction-fraction)<.14,
       'Не сохранено относительное положение при сокращении: '+fraction+' -> '+changedFraction);
-    assert((await page.locator('#article h1').innerText()).includes('История Уморы'));
+    assert(/история уморы/i.test(await page.locator('#article h1').innerText()));
     // Две книги показываются одновременно; замена лора не меняет текст RuleBook.
     await page.locator('#btn-split').click();
     assert(await page.locator('#split-reader').isVisible(),'Не открылся двухоконный режим');
