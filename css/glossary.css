@@ -45,7 +45,7 @@ body.split-active .gf-glossary-sheet {
 @media (max-width: 1023px) {
   body.split-active .gf-glossary-sheet { left: 0; width: 100%; }
 }
-@media (hover: none) {
+@media (hover: none) and (any-hover: none) {
   .gf-glossary-term { cursor: pointer; }
   .gf-glossary-tooltip { display: none !important; }
 }
