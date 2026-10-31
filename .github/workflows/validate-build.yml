@@ -31,6 +31,10 @@ jobs:
         run: node tools/test-glossary.js
       - name: Build RuleBook automatically
         run: node tools/build.js
+      - name: Install browser test driver
+        run: npm install --no-save --ignore-scripts playwright-core@1.56.1
+      - name: Test edition switching in Chrome
+        run: node tools/test-lore-browser.js
       - name: Commit generated book on main
         if: github.event_name == 'push'
         run: |
