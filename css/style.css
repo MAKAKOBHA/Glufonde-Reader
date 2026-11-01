@@ -697,3 +697,9 @@ body.split-active { overflow: hidden; }
   .topbar__tools .lore-switch { width: 94px; font-size: .54rem; }
 }
 @media (prefers-reduced-motion: reduce) { .lore-switch__thumb { transition: none; } }
+
+/* Иллюстрации обеих книг: сохранить пропорции и читабельность. */
+.prose .figure { margin: 1.65em auto 1.95em; max-width: 930px; }
+.prose .figure img { display: block; max-width: 100%; width: auto; height: auto; max-height: 80vh; margin: 0 auto; object-fit: contain; }
+.split-pane__scroll .prose .figure img { max-height: 60vh; }
+@media (max-width: 899px) { .prose .figure { margin: 1.1em auto 1.4em; } }

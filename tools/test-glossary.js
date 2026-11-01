@@ -142,3 +142,14 @@ assert(css.includes('.gf-glossary-tooltip'),'Нет подсказки мышь�
 assert(css.includes('body.split-active .gf-glossary-sheet'),'Нет расположения в разделённом режиме');
 assert(css.includes('text-transform: uppercase;'), 'Глоссарий нарушает регистр заголовков');
 console.log('✓ Глоссарий: 87 определений, склонения, составные термины, границы слов, UI; '+lore.shortChapters.length+'/'+lore.fullChapters.length+' глав.');
+
+// Иллюстрации размещены в соответствующих главах двух книг.
+const expectedIllustrations=["32-smuta","bronya","daleko","dul","electrostation","iskra-pistol","karbodor","krasniy-sreden","maridor","nowa-gorka-psyholohy","obetnye-bashni","osnovanie-zrovera","port-bedo","revolution-698","shans","sosna","topolickiy-uzel","ulitsa-umory","vreley","ekonomika","razkol"];
+const loreIllustrations=lore.shortChapters.concat(lore.fullChapters).map(c=>c.md).join('\n');
+for(const name of expectedIllustrations.filter(n=>!['bronya','iskra-pistol'].includes(n))){
+  assert(loreIllustrations.includes('assets/img/reader/'+name+'.webp'),'Не размещена иллюстрация '+name);
+}
+for(const name of ['bronya','iskra-pistol']){
+  assert(read('content/10-glava-9.md').includes('assets/img/reader/'+name+'.webp'),'Не размещена иллюстрация снаряжения '+name);
+}
+assert(lore.fullChapters.find(c=>c.id==='фракции-и-организации-уморы').md.includes('ulitsa-umory.webp'),'Улицы Уморы должны находиться во фракциях');
